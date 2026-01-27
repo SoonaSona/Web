@@ -3,29 +3,17 @@
   --input-bg: #f0f2f5;
   --text-color: #333;
   --label-color: #1a1a1a;
-  --primary-blue: #0d6efd; /* สีน้ำเงินปุ่ม */
-  --danger-red: #ff3b3b; /* สีแดงปุ่ม */
+  --primary-blue: #0d6efd;
+  --danger-red: #ff3b3b;
   --border-radius: 6px;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* ลบ * { ... } และ body { ... } ออก เพื่อไม่ให้ตีกับ Main Layout */
 
-body {
-  font-family: "Prompt", sans-serif;
-  background-color: #fff;
-  color: var(--text-color);
-  display: flex;
-  justify-content: center;
-  padding: 40px;
-}
-
-.container {
+/* ปรับ Container ให้ยืดเต็ม 100% */
+.admit-container {
   width: 100%;
-  max-width: 1200px;
+  padding: 0 10px; /* เว้นขอบนิดหน่อย */
 }
 
 /* --- Top Section: Avatar & Basic Info --- */
@@ -34,12 +22,16 @@ body {
   gap: 40px;
   margin-bottom: 30px;
   align-items: flex-start;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); /* เพิ่มเงาให้ดูมีมิติ */
 }
 
 .avatar-box {
   width: 100px;
   height: 100px;
-  background-color: #f0f2f5;
+  background-color: #e9ecef;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -48,9 +40,9 @@ body {
 }
 
 .avatar-box svg {
-  width: 40px;
-  height: 40px;
-  fill: #adb5bd;
+  width: 50px;
+  height: 50px;
+  fill: #6c757d;
 }
 
 .info-grid {
@@ -64,21 +56,22 @@ body {
   display: flex;
   gap: 20px;
   align-items: center;
+  width: 100%; /* บังคับให้แถวยืดเต็ม */
 }
 
 .col {
   display: flex;
   align-items: center;
-  gap: 15px; /* ระยะห่างระหว่าง Label กับ Input */
+  gap: 15px;
   flex: 1;
 }
 
-/* ปรับความกว้าง Label เฉพาะส่วนบนให้เท่ากันเพื่อให้ Input ตรงกัน */
 .top-label {
-  min-width: 110px;
+  min-width: 130px; /* ขยาย Label นิดหน่อยให้อ่านง่าย */
   text-align: right;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 14px;
+  color: #555;
 }
 
 /* --- Form Elements Styling --- */
@@ -90,7 +83,7 @@ textarea {
   width: 100%;
   padding: 10px 15px;
   background-color: var(--input-bg);
-  border: 1px solid transparent;
+  border: 1px solid #dee2e6; /* เพิ่มขอบจางๆ */
   border-radius: var(--border-radius);
   font-family: "Prompt", sans-serif;
   font-size: 14px;
@@ -103,11 +96,10 @@ input:focus,
 select:focus,
 textarea:focus {
   background-color: #fff;
-  border-color: #cbd5e1;
-  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.1);
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15); /* เงาสีฟ้าตอนกด */
 }
 
-/* Select arrow fix */
 select {
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
@@ -118,10 +110,15 @@ select {
 
 /* --- Main Form Grid --- */
 .main-form {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr; /* แบ่งครึ่งซ้ายขวา */
   column-gap: 50px;
-  row-gap: 20px;
+  row-gap: 25px;
 }
 
 .form-group {
@@ -131,15 +128,16 @@ select {
 }
 
 .form-label {
-  min-width: 80px; /* ความกว้างคงที่ของ Label ฝั่งซ้าย */
-  text-align: left;
+  min-width: 120px; /* ปรับให้เท่ากันทั้งซ้ายขวา */
+  text-align: right;
   font-size: 14px;
+  font-weight: 500;
+  color: #555;
   white-space: nowrap;
 }
 
 .form-label.long {
-  min-width: 120px; /* สำหรับ Label ที่ยาวกว่าปกติฝั่งขวา */
-  text-align: right;
+  min-width: 140px; /* ขยายสำหรับคำยาวๆ */
 }
 
 .input-group {
@@ -149,42 +147,43 @@ select {
   align-items: center;
 }
 
-/* ปุ่มเล็กสีฟ้า (เลือกเตียง, ICD10) */
+/* ปุ่ม Action เล็กๆ */
 .btn-action {
   background-color: var(--primary-blue);
   color: white;
   border: none;
-  padding: 8px 15px;
-  border-radius: 20px; /* ปุ่มมนๆ */
+  padding: 8px 20px;
+  border-radius: 6px;
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
   font-family: "Prompt", sans-serif;
+  transition: 0.2s;
 }
 
 .btn-action:hover {
-  opacity: 0.9;
+  background-color: #0b5ed7;
 }
 
 /* --- Textarea Section --- */
 .full-width {
-  grid-column: 1 / -1;
+  grid-column: 1 / -1; /* กินพื้นที่เต็ม 2 ช่อง */
   display: flex;
   gap: 15px;
   align-items: flex-start;
+  margin-top: 15px;
 }
 
 .textarea-wrapper {
   flex-grow: 1;
-  position: relative;
   display: flex;
-  align-items: flex-start;
   gap: 10px;
+  align-items: flex-start;
 }
 
 textarea {
   resize: vertical;
-  min-height: 120px;
+  min-height: 100px;
 }
 
 /* --- Footer Buttons --- */
@@ -192,23 +191,27 @@ textarea {
   display: flex;
   justify-content: flex-end;
   gap: 15px;
-  margin-top: 40px;
+  margin-top: 30px;
+  padding-bottom: 20px;
 }
 
 .btn-lg {
-  padding: 10px 30px;
+  padding: 12px 40px;
   font-size: 16px;
   border-radius: 8px;
   cursor: pointer;
   font-family: "Prompt", sans-serif;
   border: none;
   color: white;
+  font-weight: 500;
   transition: 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .btn-cancel {
-  background-color: var(--danger-red);
+  background-color: #fff;
   border: 1px solid var(--danger-red);
+  color: var(--danger-red);
 }
 
 .btn-save {
@@ -216,39 +219,38 @@ textarea {
 }
 
 .btn-cancel:hover {
-  background-color: #e63535;
+  background-color: #fff5f5;
 }
 .btn-save:hover {
   background-color: #0b5ed7;
+  transform: translateY(-1px);
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .top-section {
     flex-direction: column;
-    align-items: center;
   }
   .row {
-    flex-direction: column;
-    width: 100%;
+    flex-wrap: wrap;
   }
   .col {
-    width: 100%;
+    min-width: 45%; /* ในจอเล็กให้แสดงทีละ 2 ช่อง */
   }
-  .top-label,
-  .form-label {
+  .main-form {
+    grid-template-columns: 1fr; /* ยุบเหลือคอลัมน์เดียว */
+  }
+  .form-label,
+  .form-label.long {
     text-align: left;
     min-width: auto;
     margin-bottom: 5px;
-  }
-  .main-form {
-    grid-template-columns: 1fr;
+    display: block;
   }
   .form-group {
-    flex-direction: column;
-    align-items: stretch;
+    display: block; /* ซ้อน label ไว้บน input */
   }
-  .input-group {
-    width: 100%;
+  .full-width {
+    flex-direction: column;
   }
 }

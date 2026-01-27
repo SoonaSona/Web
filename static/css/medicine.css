@@ -1,88 +1,56 @@
-@import url("https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+/* static/css/medicine.css */
+
+/* ปรับฟอนต์ตามที่ User ต้องการ */
+@import url("https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap");
 
 body {
   font-family: "Kanit", sans-serif;
-  size: 2%;
+  background-color: #f6f7fb; /* พื้นหลังสีเทาอ่อน สบายตา */
 }
 
-button {
-  font-family: "Kanit", sans-serif;
-  size: 2%;
-  color: white;
-  margin: 3px;
-}
-
-h1 {
-  color: rgb(60, 60, 60);
-}
-
-label {
+/* ปรับแต่งส่วนหัวของตารางให้เป็นสีฟ้า และตรึงไว้ด้านบน (Sticky) */
+.table-primary th {
+  background-color: #6fa4ff !important;
+  color: #fff;
   font-weight: 500;
+  white-space: nowrap;
+  border-bottom: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10; /* ให้ลอยอยู่เหนือข้อมูล */
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
 }
 
-.FirstBar {
-  height: 20%;
-
-  background-color: rgb(255, 255, 255);
+/* ปรับแต่งแถวในตาราง */
+.table td {
+  vertical-align: middle;
+  font-size: 0.9rem;
+  padding: 0.6rem;
 }
 
-.SecondBar {
-  margin-top: 2%;
-  background-color: rgb(255, 255, 255);
+/* ปุ่มขนาดเล็กพิเศษสำหรับ Action ในตาราง */
+.btn-xs {
+  padding: 0.1rem 0.4rem;
+  font-size: 0.75rem;
+  border-radius: 4px;
 }
 
-.SecondBar button {
-  background-color: rgb(24, 66, 255);
-  border-radius: 10%;
-  border-color: rgb(24, 66, 255);
+/* Badge (ป้ายสถานะ) */
+.badge {
+  font-weight: 400;
+  font-size: 0.75rem;
+  padding: 0.4em 0.8em;
 }
 
-.SecondBar button:hover {
-  background-color: rgb(255, 255, 255);
-  color: black;
-  cursor: pointer;
-  border-radius: 0%;
-  border-color: rgb(255, 255, 255);
+/* ปรับแต่ง Input ให้ขนาดพอดี */
+.form-select-sm,
+.form-control-sm {
+  font-size: 0.85rem;
 }
 
-/* 3rd Bar */
-
-.ThirdBar {
-  margin-top: 5%;
-  margin-bottom: 1%;
-}
-
-.ThirdBar button {
-  background-color: rgb(24, 66, 255);
-  border-radius: 10%;
-  border-color: rgb(24, 66, 255);
-}
-
-.ThirdBar button:hover {
-  background-color: rgb(255, 255, 255);
-  color: black;
-  cursor: pointer;
-  border-radius: 0%;
-  border-color: rgb(255, 255, 255);
-}
-
-/* Table */
-
-.order-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-.order-table th {
-  background: #6fa4ff; /* สีฟ้าหัวตาราง */
-  color: black;
-  padding: 8px;
-  text-align: left;
-}
-
-.order-table td {
-  background: #e0e0e0; /* สีเทาแถวข้อมูล */
-  padding: 8px;
-  border-top: 1px solid #fff;
+/* เส้นคั่นแนวตั้ง */
+.vr {
+  width: 1px;
+  background-color: #dee2e6;
+  opacity: 1;
 }

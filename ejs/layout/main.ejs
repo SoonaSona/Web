@@ -2,19 +2,40 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hos IPD</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
     <link rel="stylesheet" href="/css/main.css" />
+
+    <link rel="stylesheet" href="/css/theme.css" />
   </head>
   <body>
     <div class="app">
-      <!-- SIDEBAR -->
       <aside class="sidebar">
         <h2>Hos IPD</h2>
 
-        <input type="text" placeholder="Search for..." />
+        <div class="px-3 mb-3">
+          <input type="text" class="form-control" placeholder="Search for..." />
+        </div>
 
         <ul>
-          <li><a href="/main/admit">Admit</a></li>
+          <li>
+            <a
+              href="/main/admit"
+              class="<%= body.includes('admit') ? 'active' : '' %>"
+              >Admit</a
+            >
+          </li>
           <li><a href="/main/nurse">Nurse Station</a></li>
           <li><a href="/main/preadmit">Pre-Admit</a></li>
           <li><a href="/main/food">อาหาร</a></li>
@@ -22,15 +43,11 @@
         </ul>
       </aside>
 
-      <!-- CONTENT -->
       <div class="content">
-        <div class="topbar">
-          <div class="icon">👤</div>
-          <div class="icon">⚙️</div>
-          <div class="icon">☰</div>
-        </div>
-        <main class="content"><%- body %></main>
+        <main class="page-body"><%- body %></main>
       </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

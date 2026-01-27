@@ -1,166 +1,181 @@
-<!DOCTYPE html>
-<html lang="th">
-  <head>
-    <meta charset="UTF-8" />
-    <title>บันทึกการสั่งอาหารผู้ป่วยใน</title>
+<link rel="stylesheet" href="/css/food.css" />
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
-      rel="stylesheet"
-    />
-
-    <style>
-      body {
-        background: #ffffff;
-        font-family: "Segoe UI", sans-serif;
-      }
-
-      .page-title {
-        font-size: 32px;
-        font-weight: 700;
-      }
-
-      .sub-title {
-        font-size: 14px;
-        color: #6c757d;
-      }
-
-      .form-section {
-        margin-top: 20px;
-      }
-
-      label {
-        font-size: 14px;
-        margin-bottom: 6px;
-      }
-
-      .form-control,
-      .form-select {
-        background: #f4f6f9;
-        border: none;
-        height: 44px;
-      }
-
-      textarea.form-control {
-        height: 44px;
-        resize: none;
-      }
-
-      .add-btn {
-        height: 44px;
-        width: 80px;
-        border-radius: 10px;
-      }
-
-      .bottom-actions {
-        position: fixed;
-        bottom: 20px;
-        right: 30px;
-      }
-
-      .bottom-actions .btn {
-        min-width: 100px;
-        height: 44px;
-        border-radius: 10px;
-        font-weight: 500;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="container-fluid px-5">
-      <!-- Title -->
-      <div class="mt-4">
-        <div class="page-title">บันทึกการสั่งอาหารผู้ป่วยใน</div>
-        <div class="sub-title">ข้อมูลการบันทึก</div>
-        <hr />
+<div class="container-fluid p-0">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h4 class="fw-bold mb-0 text-primary">
+        <i class="bi bi-basket3-fill"></i> บันทึกการสั่งอาหาร (Diet Order)
+      </h4>
+      <span class="text-muted small">ระบบบริหารจัดการโภชนาการผู้ป่วยใน</span>
+    </div>
+    <div class="text-end">
+      <div class="input-group">
+        <span class="input-group-text bg-white"
+          ><i class="bi bi-calendar-event"></i
+        ></span>
+        <input type="date" class="form-control" id="currentDate" />
       </div>
+    </div>
+  </div>
 
-      <!-- Header Info -->
-      <div class="row mb-4">
-        <div class="col">เลขประจำตัวผู้ป่วย</div>
-        <div class="col">ชื่อ-นามสกุล</div>
-        <div class="col">วันที่รับประทาน</div>
-      </div>
-
-      <!-- Form -->
-      <div class="form-section">
-        <!-- Row 1 -->
-        <div class="row mb-3">
-          <div class="col-md-4">
-            <label>ประเภทอาหาร</label>
-            <select class="form-select"></select>
-          </div>
-
-          <div class="col-md-4">
-            <label>ชื่อรายการ</label>
-            <select class="form-select"></select>
-          </div>
-
-          <div class="col-md-2">
-            <label>จำนวน</label>
-            <input type="number" class="form-control" value="1" />
+  <div class="card border-0 shadow-sm mb-4 bg-primary-subtle">
+    <div class="card-body">
+      <h6 class="fw-bold text-primary mb-3">
+        <i class="bi bi-person-vcard"></i> ข้อมูลผู้ป่วย
+      </h6>
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label small text-muted"
+            >เลขประจำตัวผู้ป่วย (HN)</label
+          >
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="ระบุ HN..." />
+            <button class="btn btn-primary">
+              <i class="bi bi-search"></i>ค้นหา
+            </button>
           </div>
         </div>
 
-        <!-- Row 2 -->
-        <div class="row mb-3">
-          <div class="col-md-4">
-            <label>อาหารเสริม</label>
-            <select class="form-select"></select>
-          </div>
-
-          <div class="col-md-2">
-            <label>จำนวน</label>
-            <input type="number" class="form-control" value="0" />
-          </div>
-
-          <div class="col-md-4">
-            <label>แคลอรี่</label>
-            <input type="text" class="form-control" />
-          </div>
+        <div class="col-md-4">
+          <label class="form-label small text-muted">ชื่อ-นามสกุล</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="ระบุชื่อผู้ป่วย..."
+          />
         </div>
 
-        <!-- Row 3 -->
-        <div class="row mb-3">
-          <div class="col-md-10">
-            <label>อาหารเฉพาะโรค</label>
-            <select class="form-select"></select>
-          </div>
+        <div class="col-md-3">
+          <label class="form-label small text-muted">Ward / ตึก</label>
+          <select class="form-select">
+            <option selected disabled>-- เลือกตึก --</option>
+            <option>อายุรกรรมชาย (01)</option>
+            <option>ศัลยกรรม (02)</option>
+            <option>สูตินารีเวช (03)</option>
+            <option>กุมารเวชกรรม (04)</option>
+          </select>
         </div>
 
-        <!-- Row 4 -->
-        <div class="row mb-3 align-items-end">
-          <div class="col-md-10">
-            <label>แพ้อาหาร</label>
-            <input class="form-control" />
-          </div>
-          <div class="col-md-2">
-            <button class="btn btn-primary add-btn">Add</button>
-          </div>
-        </div>
-
-        <!-- Row 5 -->
-        <div class="row mb-3 align-items-end">
-          <div class="col-md-10">
-            <label>หมายเหตุ</label>
-            <input class="form-control" />
-          </div>
-          <div class="col-md-2">
-            <button class="btn btn-primary add-btn">Add</button>
-          </div>
+        <div class="col-md-2">
+          <label class="form-label small text-muted">เตียง</label>
+          <input type="text" class="form-control text-center" placeholder="-" />
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Bottom Buttons -->
-    <div class="bottom-actions">
-      <button class="btn btn-danger me-2">ยกเลิก</button>
-      <button class="btn btn-primary">บันทึก</button>
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3 border-bottom">
+      <h6 class="mb-0 fw-bold">
+        <i class="bi bi-egg-fried"></i> รายละเอียดเมนูอาหาร
+      </h6>
     </div>
-  </body>
-</html>
+    <div class="card-body p-4">
+      <div class="row g-3 mb-4">
+        <div class="col-md-3">
+          <label class="form-label fw-bold">ประเภทอาหาร</label>
+          <select class="form-select bg-light">
+            <option selected>ธรรมดา (Normal)</option>
+            <option>อ่อน (Soft)</option>
+            <option>เหลว (Liquid)</option>
+            <option>ทางสายยาง (Tube)</option>
+          </select>
+        </div>
+        <div class="col-md-7">
+          <label class="form-label fw-bold">ชื่อรายการอาหาร</label>
+          <select class="form-select bg-light">
+            <option selected disabled>-- เลือกเมนูอาหาร --</option>
+            <option>ข้าวต้มหมู + ไข่ลวก</option>
+            <option>ข้าวผัดอเมริกัน</option>
+            <option>แกงจืดเต้าหู้หมูสับ + ข้าวสวย</option>
+            <option>ก๋วยเตี๋ยวไก่ตุ๋น</option>
+            <option>ข้าวต้มปลา</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label fw-bold">จำนวน (มื้อ)</label>
+          <input
+            type="number"
+            class="form-control text-center"
+            value="1"
+            min="1"
+          />
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <label class="form-label">อาหารเสริม (Supplement)</label>
+          <div class="input-group">
+            <select class="form-select">
+              <option selected>ไม่มี</option>
+              <option>นมจืด</option>
+              <option>Ensure</option>
+              <option>Glucerna</option>
+            </select>
+            <input
+              type="number"
+              class="form-control"
+              style="max-width: 80px"
+              placeholder="qty"
+              value="1"
+              min="0"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">จำกัดแคลอรี่ (Kcal)</label>
+          <input type="text" class="form-control" placeholder="เช่น 1800" />
+        </div>
+
+        <div class="col-md-5">
+          <label class="form-label">อาหารเฉพาะโรค (Disease)</label>
+          <select class="form-select">
+            <option selected>ไม่ระบุ</option>
+            <option>เบาหวาน (DM)</option>
+            <option>โรคไต (CKD)</option>
+            <option>ความดัน (HT)</option>
+            <option>ไขมันต่ำ (Low Fat)</option>
+          </select>
+        </div>
+      </div>
+
+      <hr class="my-4 dashed-line" />
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label text-danger fw-bold">
+            <i class="bi bi-exclamation-triangle-fill"></i> แพ้อาหาร (Allergies)
+          </label>
+          <textarea
+            class="form-control allergy-input"
+            rows="2"
+            placeholder="ระบุสิ่งที่แพ้ (หากไม่มีให้เว้นว่าง)"
+          ></textarea>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold">หมายเหตุเพิ่มเติม</label>
+          <textarea
+            class="form-control"
+            rows="2"
+            placeholder="ระบุเพิ่มเติม..."
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-5">
+        <button class="btn btn-secondary px-4">
+          <i class="bi bi-arrow-counterclockwise"></i> ล้างค่า
+        </button>
+        <button class="btn btn-success px-5 shadow">
+          <i class="bi bi-save"></i> บันทึกข้อมูล
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById("currentDate").valueAsDate = new Date();
+</script>

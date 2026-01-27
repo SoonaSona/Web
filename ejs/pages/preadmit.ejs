@@ -1,75 +1,92 @@
 <link rel="stylesheet" href="/css/pre-admit.css" />
-<main class="main">
-  <h1>Pre-Admit</h1>
 
-  <div class="filters">
-    <button class="btn-primary">ลงรายการ</button>
+<div class="container-fluid p-0">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="fw-bold">Pre-Admit</h3>
+    <button class="btn btn-primary">
+      <i class="bi bi-plus-circle"></i> ลงรายการใหม่
+    </button>
+  </div>
 
-    <div class="filter-row">
-      <div class="field">
-        <label>วันที่</label>
-        <input type="date" />
-      </div>
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label text-muted">วันที่</label>
+          <input type="date" class="form-control" />
+        </div>
+        <div class="col-md-9">
+          <label class="form-label text-muted">ค้นหา</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light"
+              ><i class="bi bi-search"></i
+            ></span>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search name, HN, order id..."
+            />
+          </div>
+        </div>
 
-      <div class="field">
-        <label>ค้นหา</label>
-        <input type="text" placeholder="Search..." />
-      </div>
-    </div>
-
-    <div class="filter-row">
-      <div class="field">
-        <label>แผนก</label>
-        <select>
-          <option>01 : อายุรกรรม</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>แพทย์เจ้าของคนไข้ / ชื่อแพทย์</label>
-        <select>
-          <option>เลือก</option>
-          <option>เลือก</option>
-          <option>เลือก</option>
-        </select>
+        <div class="col-md-4">
+          <label class="form-label text-muted">แผนก</label>
+          <select class="form-select">
+            <option>01 : อายุรกรรม</option>
+            <option>02 : ศัลยกรรม</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label text-muted">แพทย์เจ้าของคนไข้</label>
+          <select class="form-select">
+            <option selected>เลือกแพทย์...</option>
+            <option>นพ. สมชาย ใจดี</option>
+          </select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+          <button class="btn btn-secondary w-100">Clear Filter</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>No</th>
-        <th>วันที่ Admit</th>
-        <th>Order Id</th>
-        <th>เลขประจำตัวผู้ป่วย</th>
-        <th>ชื่อ</th>
-        <th>เบอร์ติดต่อ</th>
-        <th>แพทย์ Order</th>
-        <th>ลบ</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="active-row">
-        <td>1</td>
-        <td>19/01/2568</td>
-        <td>590</td>
-        <td>41414165</td>
-        <td>นายโกฟาโมย หวังดี</td>
-        <td>0937584922</td>
-        <td>นายโกฟาโมย หวังดี</td>
-        <td class="delete">🗑</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>19/01/2568</td>
-        <td>589</td>
-        <td>41414165</td>
-        <td>นายโกฟาโมย หวังดี</td>
-        <td>0937584922</td>
-        <td>นายโกฟาโมย หวังดี</td>
-        <td class="delete">🗑</td>
-      </tr>
-    </tbody>
-  </table>
-</main>
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="py-3 ps-3">No</th>
+              <th>วันที่ Admit</th>
+              <th>Order Id</th>
+              <th>HN</th>
+              <th>ชื่อ-นามสกุล</th>
+              <th>เบอร์ติดต่อ</th>
+              <th>แพทย์ Order</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ps-3">1</td>
+              <td><span class="badge bg-info text-dark">19/01/2568</span></td>
+              <td>590</td>
+              <td>41414165</td>
+              <td class="fw-bold text-primary">นายโกฟาโมย หวังดี</td>
+              <td>093-758-4922</td>
+              <td>นพ. รักษา ดีมาก</td>
+            </tr>
+            <tr>
+              <td class="ps-3">2</td>
+              <td><span class="badge bg-info text-dark">19/01/2568</span></td>
+              <td>589</td>
+              <td>41414165</td>
+              <td class="fw-bold text-primary">นางสาวใจดี มีสุข</td>
+              <td>081-234-5678</td>
+              <td>พญ. สวยใส ใจดี</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

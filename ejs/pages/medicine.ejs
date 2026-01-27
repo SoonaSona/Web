@@ -1,123 +1,147 @@
 <link rel="stylesheet" href="/css/medicine.css">
 
-<h1>ลงทะเบียนจัดยาผู้ป่วยใน</h1>
-    <div class = "FirstBar">
-        <label type = "Date">วันที่ &nbsp;</label>
-        <input type="date">
-        &nbsp;
-        <label type = "Ward">Ward &nbsp;</label>
+<div class="container-fluid h-100 d-flex flex-column p-0">
 
+    <div class="card border-0 shadow-sm mb-2 bg-white">
+        <div class="card-body p-3">
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary text-white rounded p-2 me-3">
+                        <i class="bi bi-capsule fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0 text-primary">Medication Order</h5>
+                        <small class="text-muted">ลงทะเบียนจัดยาผู้ป่วยใน</small>
+                    </div>
+                </div>
 
-        <input list="items" placeholder="เลือกรายการ">
-            <datalist id="items">
-            <option value="ดี">
-            <option value="แย่">
-            </datalist>
-    
-        <label>
-            <input type="radio" name="level" value="All" checked>
-            ทั้งหมด
-            </label>
+                <div class="d-flex gap-2">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light">วันที่</span>
+                        <input type="date" class="form-control" id="currentDate">
+                    </div>
+                    <select class="form-select form-select-sm" style="width: 150px;">
+                        <option selected>All Wards</option>
+                        <option>Ward 01</option>
+                        <option>Ward 02</option>
+                    </select>
+                </div>
+            </div>
 
-        <label>
-            <input type="radio" name="level" value="IRx">
-            IRx
-            </label>
+            <div class="d-flex flex-wrap justify-content-between align-items-end gap-2">
+                
+                <div class="btn-group" role="group">
+                    <input type="radio" class="btn-check" name="level" id="lvlAll" autocomplete="off" checked>
+                    <label class="btn btn-sm btn-outline-primary" for="lvlAll">ทั้งหมด</label>
+                  
+                    <input type="radio" class="btn-check" name="level" id="lvlIRx" autocomplete="off">
+                    <label class="btn btn-sm btn-outline-primary" for="lvlIRx">IRx</label>
+                  
+                    <input type="radio" class="btn-check" name="level" id="lvlTRx" autocomplete="off">
+                    <label class="btn btn-sm btn-outline-primary" for="lvlTRx">TRx</label>
 
-        <label>
-            <input type="radio" name="level" value="TRx">
-            TRx
-            </label>
+                    <input type="radio" class="btn-check" name="level" id="lvlEMx" autocomplete="off">
+                    <label class="btn btn-sm btn-outline-primary" for="lvlEMx">EMx</label>
 
-        <label>
-            <input type="radio" name="level" value="EMx">
-            EMx
-            </label>
-        
-        <label>
-            <input type ="radio" name = "level" value = "ATO">
-            ATO
-        </label>
+                    <input type="radio" class="btn-check" name="level" id="lvlATO" autocomplete="off">
+                    <label class="btn btn-sm btn-outline-primary" for="lvlATO">ATO</label>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <select class="form-select form-select-sm" style="width: 140px;">
+                        <option selected disabled>-- Med Type --</option>
+                        <option>List 1</option>
+                        <option>List 2</option>
+                    </select>
+                    <select class="form-select form-select-sm" style="width: 140px;">
+                        <option selected disabled>-- Status --</option>
+                        <option>รอจัดยา</option>
+                        <option>จ่ายแล้ว</option>
+                    </select>
+                </div>
+
+                <div class="d-flex gap-1 ms-auto">
+                    <button class="btn btn-sm btn-info text-white"><i class="bi bi-basket"></i> จัดยา</button>
+                    <button class="btn btn-sm btn-warning text-dark"><i class="bi bi-search"></i> ตรวจสอบ</button>
+                    <button class="btn btn-sm btn-success"><i class="bi bi-check-circle"></i> จ่ายแล้ว</button>
+                    <button class="btn btn-sm btn-secondary"><i class="bi bi-clock-history"></i> ค้างจ่าย</button>
+                    <div class="vr mx-2"></div>
+                    <button class="btn btn-sm btn-primary shadow-sm"><i class="bi bi-plus-lg"></i> Add New</button>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    <div class = "SecondBar">
-
-        <button>จัดยา</button>
-        <button>ตรวจสอบยา</button>
-        <button>จ่ายยาแล้ว</button>
-        <button>ยาค้างจ่าย</button>
-
-        <label type = "Med Type">Med Type &nbsp;</label>
-            <input list = "MedType" placeholder="เลือกรายการ">
-                <datalist id="MedType">
-                    <option value="List1">
-                    <option value="List2">
-                    <option value="List3">
-                </datalist>
-        <label type = "Status">สถานะ &nbsp;</label>
-             <input list = "Stat" placeholder="เลือกรายการ">
-                <datalist id="Stat">
-                    <option value="List1s">
-                    <option value="List2s">
-                    <option value="List3s">
-                </datalist>
-
-   
+    <div class="card border-0 shadow-sm flex-grow-1 overflow-hidden">
+        <div class="card-body p-0 table-responsive">
+            <table class="table table-hover table-bordered table-striped mb-0 text-nowrap align-middle">
+                <thead class="table-primary sticky-top">
+                    <tr>
+                        <th>Order No.</th>
+                        <th>วันเวลาที่สั่ง</th>
+                        <th>Type</th>
+                        <th class="text-center">เตียง</th>
+                        <th>ชื่อ-นามสกุล</th>
+                        <th>แพทย์ที่สั่ง</th>
+                        <th>ผู้บันทึก</th>
+                        <th class="text-center">จำนวน</th>
+                        <th class="text-end">มูลค่า</th>
+                        <th class="text-center">สถานะ</th> </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="fw-bold text-primary">302603</td>
+                        <td>13/04/2568 10:30</td>
+                        <td><span class="badge bg-info text-dark">IRx</span></td>
+                        <td class="text-center">062</td>
+                        <td>นายโฟก โฟกโฟก</td>
+                        <td>นพ.สมชาย ใจดี</td>
+                        <td>พยาบาลเอ</td>
+                        <td class="text-center">2</td>
+                        <td class="text-end">3.45</td>
+                        <td class="text-center"><span class="badge bg-secondary">ไม่ Screen</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">302604</td>
+                        <td>13/04/2568 11:15</td>
+                        <td><span class="badge bg-warning text-dark">TRx</span></td>
+                        <td class="text-center">063</td>
+                        <td>นางสาวใจ หวังดี</td>
+                        <td>พญ.สมหญิง</td>
+                        <td>พยาบาลบี</td>
+                        <td class="text-center">5</td>
+                        <td class="text-end">120.00</td>
+                        <td class="text-center"><span class="badge bg-success">จ่ายแล้ว</span></td>
+                    </tr>
+                    <% for(let i=0; i<10; i++) { %>
+                    <tr>
+                        <td class="fw-bold text-primary">30260<%= i+5 %></td>
+                        <td>13/04/2568 12:00</td>
+                        <td><span class="badge bg-danger">EMx</span></td>
+                        <td class="text-center">06<%= i+4 %></td>
+                        <td>ผู้ป่วย ทดสอบระบบ</td>
+                        <td>นพ.ทดสอบ</td>
+                        <td>พยาบาลซี</td>
+                        <td class="text-center">1</td>
+                        <td class="text-end">50.00</td>
+                        <td class="text-center"><span class="badge bg-warning text-dark">รอตรวจสอบ</span></td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-white small text-muted">
+            <div class="d-flex justify-content-between">
+                <span>ทั้งหมด 12 รายการ</span>
+                <span>ยอดรวมมูลค่า: 623.45 บาท</span>
+            </div>
+        </div>
     </div>
 
+</div>
 
-
-    <div class = "ThirdBar">
-
-        <button>Add New</button>
-
-    </div>
-    
-
-    <table class="order-table">
-  <thead>
-    <tr>
-      <th>Order No.</th>
-      <th>วันเวลาที่สั่ง</th>
-      <th>type</th>
-      <th>เตียง</th>
-      <th>ชื่อ-นามสกุล</th>
-      <th>แพทย์ที่สั่ง</th>
-      <th>ผู้บันทึกใบสั่งยา</th>
-      <th>จำนวน</th>
-      <th>มูลค่า</th>
-      <th>สถานะ</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <tr>
-      <td>302603</td>
-      <td>13/04/2568</td>
-      <td>IRx</td>
-      <td>062</td>
-      <td>นายโฟก โฟกโฟก</td>
-      <td>นายโฟก โฟกโฟก</td>
-      <td>นายโฟก โฟกโฟก</td>
-      <td>2</td>
-      <td>3.45</td>
-      <td>ไม่ Screen</td>
-    </tr>
-
-    <tr>
-      <td>302603</td>
-      <td>13/04/2568</td>
-      <td>IRx</td>
-      <td>062</td>
-      <td>นายโฟก โฟกโฟก</td>
-      <td>นายโฟก โฟกโฟก</td>
-      <td>นายโฟก โฟกโฟก</td>
-      <td>2</td>
-      <td>3.45</td>
-      <td>ไม่ Screen</td>
-    </tr>
-  </tbody>
-</table>
-
-
-</body>
+<script>
+    document.getElementById('currentDate').valueAsDate = new Date();
+</script>

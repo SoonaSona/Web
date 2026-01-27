@@ -1,0 +1,72 @@
+/* static/css/theme.css */
+
+/* บังคับใช้ฟอนต์ Prompt ทั้งโปรเจกต์ */
+* {
+  font-family: "Prompt", sans-serif !important;
+}
+
+body {
+  background-color: #f5f6fa;
+}
+
+/* ปรับแต่งช่องกรอกข้อมูล (Input) ให้ดูนุ่มนวลเหมือนหน้า Admit */
+.form-control,
+.form-select,
+input[type="text"],
+input[type="date"],
+input[type="number"] {
+  border-radius: 6px !important;
+  background-color: #f0f2f5 !important;
+  border: 1px solid transparent !important;
+  padding: 10px 15px !important;
+  font-size: 14px !important;
+  color: #495057 !important;
+}
+
+/* ตอนคลิกที่ช่องกรอกข้อมูล */
+.form-control:focus,
+.form-select:focus,
+input:focus {
+  background-color: #fff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.1) !important;
+}
+
+/* ปรับปุ่มกด (Button) */
+.btn {
+  border-radius: 6px !important;
+  padding: 8px 20px !important;
+  font-weight: 500 !important;
+}
+
+.btn-primary {
+  background-color: #0d6efd !important;
+  border: none !important;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7 !important;
+}
+
+/* ปรับ Sidebar ให้ลิงก์ดูสวยขึ้น */
+.sidebar ul li {
+  padding: 0 20px;
+}
+.sidebar a {
+  display: block;
+  padding: 10px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+.sidebar a:hover {
+  background-color: #eef2ff;
+  color: #0d6efd;
+  text-decoration: none;
+}
+
+/* ปรับพื้นที่เนื้อหาหลัก */
+.page-body {
+  padding: 30px;
+  overflow-y: auto;
+  height: calc(100vh - 60px); /* ความสูงเต็มจอ - topbar */
+}
