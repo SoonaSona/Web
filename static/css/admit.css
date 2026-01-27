@@ -254,3 +254,66 @@ textarea {
     flex-direction: column;
   }
 }
+
+/* Styling สำหรับ Modal เลือกเตียง */
+.bed-grid-container {
+  padding: 10px;
+}
+
+.room-label {
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.bed-row {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.bed-card {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  border: 1px solid #ddd;
+  background: white;
+}
+
+/* Effect ตอนเอาเมาส์ชี้ */
+.bed-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* เตียงว่าง (สีเขียว) */
+.bed-card.available {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-color: #c8e6c9;
+}
+.bed-card.available:hover {
+  background-color: #c8e6c9;
+}
+
+/* เตียงไม่ว่าง (สีแดง) */
+.bed-card.occupied {
+  background-color: #ffebee;
+  color: #c62828;
+  border-color: #ffcdd2;
+  cursor: not-allowed; /* เมาส์เป็นรูปห้าม */
+  opacity: 0.8;
+}
+.bed-card.occupied:hover {
+  transform: none; /* ไม่ขยับถ้าไม่ว่าง */
+}
