@@ -1,0 +1,85 @@
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+  font-family: "Montserrat", sans-serif;
+}
+
+.login-container {
+  width: 360px;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.logo {
+  margin-bottom: 20px;
+}
+
+.logo img {
+  width: 70px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #3f6ad8;
+  font-size: 14px;
+  outline: none;
+}
+
+input::placeholder {
+  color: #999;
+}
+
+select {
+  cursor: pointer;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #3f6ad8;
+  color: #fff;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-family: "Montserrat", sans-serif;
+}
+
+button:hover {
+  background: #2f54c6;
+}
+
+.forgot {
+  margin-top: 12px;
+}
+
+.forgot a {
+  font-size: 13px;
+  color: #3f6ad8;
+  text-decoration: none;
+}
+
+.forgot a:hover {
+  text-decoration: underline;
+}

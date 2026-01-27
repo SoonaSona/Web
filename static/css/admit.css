@@ -1,0 +1,254 @@
+:root {
+  --bg-color: #ffffff;
+  --input-bg: #f0f2f5;
+  --text-color: #333;
+  --label-color: #1a1a1a;
+  --primary-blue: #0d6efd; /* สีน้ำเงินปุ่ม */
+  --danger-red: #ff3b3b; /* สีแดงปุ่ม */
+  --border-radius: 6px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Prompt", sans-serif;
+  background-color: #fff;
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* --- Top Section: Avatar & Basic Info --- */
+.top-section {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 30px;
+  align-items: flex-start;
+}
+
+.avatar-box {
+  width: 100px;
+  height: 100px;
+  background-color: #f0f2f5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar-box svg {
+  width: 40px;
+  height: 40px;
+  fill: #adb5bd;
+}
+
+.info-grid {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.row {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.col {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* ระยะห่างระหว่าง Label กับ Input */
+  flex: 1;
+}
+
+/* ปรับความกว้าง Label เฉพาะส่วนบนให้เท่ากันเพื่อให้ Input ตรงกัน */
+.top-label {
+  min-width: 110px;
+  text-align: right;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+/* --- Form Elements Styling --- */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px 15px;
+  background-color: var(--input-bg);
+  border: 1px solid transparent;
+  border-radius: var(--border-radius);
+  font-family: "Prompt", sans-serif;
+  font-size: 14px;
+  color: #495057;
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  background-color: #fff;
+  border-color: #cbd5e1;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.1);
+}
+
+/* Select arrow fix */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+}
+
+/* --- Main Form Grid --- */
+.main-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 50px;
+  row-gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.form-label {
+  min-width: 80px; /* ความกว้างคงที่ของ Label ฝั่งซ้าย */
+  text-align: left;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.form-label.long {
+  min-width: 120px; /* สำหรับ Label ที่ยาวกว่าปกติฝั่งขวา */
+  text-align: right;
+}
+
+.input-group {
+  flex-grow: 1;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* ปุ่มเล็กสีฟ้า (เลือกเตียง, ICD10) */
+.btn-action {
+  background-color: var(--primary-blue);
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 20px; /* ปุ่มมนๆ */
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: "Prompt", sans-serif;
+}
+
+.btn-action:hover {
+  opacity: 0.9;
+}
+
+/* --- Textarea Section --- */
+.full-width {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.textarea-wrapper {
+  flex-grow: 1;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* --- Footer Buttons --- */
+.footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 40px;
+}
+
+.btn-lg {
+  padding: 10px 30px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Prompt", sans-serif;
+  border: none;
+  color: white;
+  transition: 0.2s;
+}
+
+.btn-cancel {
+  background-color: var(--danger-red);
+  border: 1px solid var(--danger-red);
+}
+
+.btn-save {
+  background-color: var(--primary-blue);
+}
+
+.btn-cancel:hover {
+  background-color: #e63535;
+}
+.btn-save:hover {
+  background-color: #0b5ed7;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .top-section {
+    flex-direction: column;
+    align-items: center;
+  }
+  .row {
+    flex-direction: column;
+    width: 100%;
+  }
+  .col {
+    width: 100%;
+  }
+  .top-label,
+  .form-label {
+    text-align: left;
+    min-width: auto;
+    margin-bottom: 5px;
+  }
+  .main-form {
+    grid-template-columns: 1fr;
+  }
+  .form-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .input-group {
+    width: 100%;
+  }
+}

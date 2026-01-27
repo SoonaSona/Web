@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hos IPD</title>
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <h2>Hos IPD</h2>
+
+        <input type="text" placeholder="Search for..." />
+
+        <ul>
+          <li><a href="/main/admit">Admit</a></li>
+          <li><a href="/main/nurse">Nurse Station</a></li>
+          <li><a href="/main/preadmit">Pre-Admit</a></li>
+          <li><a href="/main/food">อาหาร</a></li>
+          <li><a href="/main/medicine">ยา</a></li>
+        </ul>
+      </aside>
+
+      <!-- CONTENT -->
+      <div class="content">
+        <div class="topbar">
+          <div class="icon">👤</div>
+          <div class="icon">⚙️</div>
+          <div class="icon">☰</div>
+        </div>
+        <main class="content"><%- body %></main>
+      </div>
+    </div>
+  </body>
+</html>

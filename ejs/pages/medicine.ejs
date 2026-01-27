@@ -1,0 +1,123 @@
+<link rel="stylesheet" href="/css/medicine.css">
+
+<h1>ลงทะเบียนจัดยาผู้ป่วยใน</h1>
+    <div class = "FirstBar">
+        <label type = "Date">วันที่ &nbsp;</label>
+        <input type="date">
+        &nbsp;
+        <label type = "Ward">Ward &nbsp;</label>
+
+
+        <input list="items" placeholder="เลือกรายการ">
+            <datalist id="items">
+            <option value="ดี">
+            <option value="แย่">
+            </datalist>
+    
+        <label>
+            <input type="radio" name="level" value="All" checked>
+            ทั้งหมด
+            </label>
+
+        <label>
+            <input type="radio" name="level" value="IRx">
+            IRx
+            </label>
+
+        <label>
+            <input type="radio" name="level" value="TRx">
+            TRx
+            </label>
+
+        <label>
+            <input type="radio" name="level" value="EMx">
+            EMx
+            </label>
+        
+        <label>
+            <input type ="radio" name = "level" value = "ATO">
+            ATO
+        </label>
+    </div>
+
+    <div class = "SecondBar">
+
+        <button>จัดยา</button>
+        <button>ตรวจสอบยา</button>
+        <button>จ่ายยาแล้ว</button>
+        <button>ยาค้างจ่าย</button>
+
+        <label type = "Med Type">Med Type &nbsp;</label>
+            <input list = "MedType" placeholder="เลือกรายการ">
+                <datalist id="MedType">
+                    <option value="List1">
+                    <option value="List2">
+                    <option value="List3">
+                </datalist>
+        <label type = "Status">สถานะ &nbsp;</label>
+             <input list = "Stat" placeholder="เลือกรายการ">
+                <datalist id="Stat">
+                    <option value="List1s">
+                    <option value="List2s">
+                    <option value="List3s">
+                </datalist>
+
+   
+    </div>
+
+
+
+    <div class = "ThirdBar">
+
+        <button>Add New</button>
+
+    </div>
+    
+
+    <table class="order-table">
+  <thead>
+    <tr>
+      <th>Order No.</th>
+      <th>วันเวลาที่สั่ง</th>
+      <th>type</th>
+      <th>เตียง</th>
+      <th>ชื่อ-นามสกุล</th>
+      <th>แพทย์ที่สั่ง</th>
+      <th>ผู้บันทึกใบสั่งยา</th>
+      <th>จำนวน</th>
+      <th>มูลค่า</th>
+      <th>สถานะ</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>302603</td>
+      <td>13/04/2568</td>
+      <td>IRx</td>
+      <td>062</td>
+      <td>นายโฟก โฟกโฟก</td>
+      <td>นายโฟก โฟกโฟก</td>
+      <td>นายโฟก โฟกโฟก</td>
+      <td>2</td>
+      <td>3.45</td>
+      <td>ไม่ Screen</td>
+    </tr>
+
+    <tr>
+      <td>302603</td>
+      <td>13/04/2568</td>
+      <td>IRx</td>
+      <td>062</td>
+      <td>นายโฟก โฟกโฟก</td>
+      <td>นายโฟก โฟกโฟก</td>
+      <td>นายโฟก โฟกโฟก</td>
+      <td>2</td>
+      <td>3.45</td>
+      <td>ไม่ Screen</td>
+    </tr>
+  </tbody>
+</table>
+
+
+</body>

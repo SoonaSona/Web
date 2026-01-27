@@ -1,0 +1,144 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+body { background:#f6f7fb; }
+.sidebar { width:220px; }
+.tab-btn { border-radius:10px; }
+.table thead th { font-size:14px; }
+</style>
+</head>
+
+<body>
+<div class="d-flex" style="height:100vh">
+<!-- Main -->
+<div class="flex-grow-1 p-4">
+
+<!-- Header -->
+<div class="d-flex justify-content-between mb-3">
+  <h3 class="fw-bold">Nurse Station</h3>
+</div>
+
+<!-- Tabs -->
+<div class="mb-3">
+  <button class="btn btn-primary tab-btn me-1" onclick="changeTab('ผู้ป่วยใน')">ผู้ป่วยใน</button>
+  <button class="btn btn-primary tab-btn me-1" onclick="changeTab('คำสั่งแพทย์')">คำสั่งแพทย์</button>
+  <button class="btn btn-primary tab-btn me-1" onclick="changeTab('Nurses Note')">บันทึกการพยาบาล</button>
+  <button class="btn btn-primary tab-btn me-1" onclick="changeTab('Medication')">Medication</button>
+  <button class="btn btn-primary tab-btn me-1" onclick="changeTab('Lab Results')">ผลตรวจทางห้องปฏิบัติการ</button>
+  <button class="btn btn-primary tab-btn" onclick="changeTab('Consents')">เอกสารยินยอม</button>
+</div>
+
+<!-- Filter -->
+<div class="row mb-3">
+  <div class="col-3">
+    Ward
+    <select class="form-select">
+      <option>consult 1/2</option>
+    </select>
+  </div>
+  <div class="col-4">
+    แพทย์เจ้าของคนไข้ / ชื่อแพทย์
+    <select class="form-select">
+      <option>consult 1/2</option>
+    </select>
+  </div>
+  <div class="col d-flex align-items-end">
+    <button class="btn btn-primary">Clear</button>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="card shadow-sm">
+<div class="card-body">
+
+<div class="d-flex mb-2">
+  <button class="btn btn-outline-secondary btn-sm me-2">
+    <i class="bi bi-funnel"></i>
+  </button>
+  <input id="search" class="form-control w-25" placeholder="Search...">
+</div>
+
+<table class="table table-bordered text-center align-middle">
+<thead class="table-light">
+<tr>
+  <th>No</th>
+  <th>เลขเตียง</th>
+  <th>เลขประจำตัวผู้ป่วย</th>
+  <th>ชื่อ-นามสกุล</th>
+  <th>แพทย์เจ้าของคนไข้</th>
+  <th>วัน Admit</th>
+  <th>เวลา Admit</th>
+  <th>อาหาร</th>
+  <th>Lab</th>
+  <th>X-ray</th>
+</tr>
+</thead>
+
+<tbody id="tableBody">
+<tr>
+  <td>1</td>
+  <td>324</td>
+  <td>6732818224</td>
+  <td>นายนัททนันท์ หวังตอก</td>
+  <td>นายภูบดี แช่มๆรัมย์</td>
+  <td>30 ม.ค. 68</td>
+  <td>09:09:30</td>
+  <td>
+    <button class="btn btn-sm btn-outline-success" onclick="action('อาหาร')">ดู</button>
+  </td>
+  <td>
+    <button class="btn btn-sm btn-outline-info" onclick="action('Lab')">ดู</button>
+  </td>
+  <td>
+    <button class="btn btn-sm btn-outline-warning" onclick="action('X-ray')">ดู</button>
+  </td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="mainModal">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+  <h5 class="modal-title">รายละเอียด</h5>
+  <button class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body" id="modalBody"></div>
+</div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const modal = new bootstrap.Modal(document.getElementById('mainModal'));
+
+function changeTab(tab){
+  document.getElementById("modalBody").innerHTML =
+    <b>เปลี่ยนไปที่เมนู:</b> ${tab};
+  modal.show();
+}
+
+function action(type){
+  document.getElementById("modalBody").innerHTML =
+    <b>เปิดข้อมูล:</b> ${type} ของผู้ป่วย;
+  modal.show();
+}
+
+// search
+document.getElementById("search").addEventListener("keyup", function(){
+  let v = this.value.toLowerCase();
+  document.querySelectorAll("#tableBody tr").forEach(row=>{
+    row.style.display = row.innerText.toLowerCase().includes(v) ? "" : "none";
+  });
+});
+</script>
+</body>
+</html>

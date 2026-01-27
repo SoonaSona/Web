@@ -1,0 +1,88 @@
+@import url("https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+body {
+  font-family: "Kanit", sans-serif;
+  size: 2%;
+}
+
+button {
+  font-family: "Kanit", sans-serif;
+  size: 2%;
+  color: white;
+  margin: 3px;
+}
+
+h1 {
+  color: rgb(60, 60, 60);
+}
+
+label {
+  font-weight: 500;
+}
+
+.FirstBar {
+  height: 20%;
+
+  background-color: rgb(255, 255, 255);
+}
+
+.SecondBar {
+  margin-top: 2%;
+  background-color: rgb(255, 255, 255);
+}
+
+.SecondBar button {
+  background-color: rgb(24, 66, 255);
+  border-radius: 10%;
+  border-color: rgb(24, 66, 255);
+}
+
+.SecondBar button:hover {
+  background-color: rgb(255, 255, 255);
+  color: black;
+  cursor: pointer;
+  border-radius: 0%;
+  border-color: rgb(255, 255, 255);
+}
+
+/* 3rd Bar */
+
+.ThirdBar {
+  margin-top: 5%;
+  margin-bottom: 1%;
+}
+
+.ThirdBar button {
+  background-color: rgb(24, 66, 255);
+  border-radius: 10%;
+  border-color: rgb(24, 66, 255);
+}
+
+.ThirdBar button:hover {
+  background-color: rgb(255, 255, 255);
+  color: black;
+  cursor: pointer;
+  border-radius: 0%;
+  border-color: rgb(255, 255, 255);
+}
+
+/* Table */
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.order-table th {
+  background: #6fa4ff; /* สีฟ้าหัวตาราง */
+  color: black;
+  padding: 8px;
+  text-align: left;
+}
+
+.order-table td {
+  background: #e0e0e0; /* สีเทาแถวข้อมูล */
+  padding: 8px;
+  border-top: 1px solid #fff;
+}

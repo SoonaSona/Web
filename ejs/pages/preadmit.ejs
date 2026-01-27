@@ -1,0 +1,75 @@
+<link rel="stylesheet" href="/css/pre-admit.css" />
+<main class="main">
+  <h1>Pre-Admit</h1>
+
+  <div class="filters">
+    <button class="btn-primary">ลงรายการ</button>
+
+    <div class="filter-row">
+      <div class="field">
+        <label>วันที่</label>
+        <input type="date" />
+      </div>
+
+      <div class="field">
+        <label>ค้นหา</label>
+        <input type="text" placeholder="Search..." />
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <div class="field">
+        <label>แผนก</label>
+        <select>
+          <option>01 : อายุรกรรม</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>แพทย์เจ้าของคนไข้ / ชื่อแพทย์</label>
+        <select>
+          <option>เลือก</option>
+          <option>เลือก</option>
+          <option>เลือก</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>วันที่ Admit</th>
+        <th>Order Id</th>
+        <th>เลขประจำตัวผู้ป่วย</th>
+        <th>ชื่อ</th>
+        <th>เบอร์ติดต่อ</th>
+        <th>แพทย์ Order</th>
+        <th>ลบ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="active-row">
+        <td>1</td>
+        <td>19/01/2568</td>
+        <td>590</td>
+        <td>41414165</td>
+        <td>นายโกฟาโมย หวังดี</td>
+        <td>0937584922</td>
+        <td>นายโกฟาโมย หวังดี</td>
+        <td class="delete">🗑</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>19/01/2568</td>
+        <td>589</td>
+        <td>41414165</td>
+        <td>นายโกฟาโมย หวังดี</td>
+        <td>0937584922</td>
+        <td>นายโกฟาโมย หวังดี</td>
+        <td class="delete">🗑</td>
+      </tr>
+    </tbody>
+  </table>
+</main>

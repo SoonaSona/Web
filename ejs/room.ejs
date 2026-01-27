@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Room Login</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/login.css" />
+    <link rel="stylesheet" href="/css/room.css">
+  </head>
+  <body>
+    <div class="login-container">
+      <!-- Logo -->
+      <div class="logo">
+        <img src="/image/logo.png" alt="logo" />
+      </div>
+
+      <% if (error) { %>
+      <div class="error"><%= error %></div>
+    <% } %>
+
+      <!-- Room Password Form -->
+      <form action="/room" method="post">
+        <div class="form-group">
+          <input
+            type="password"
+            name="roomPassword"
+            placeholder="PASSWORD ROOM"
+            required
+          />
+        </div>
+
+        <button type="submit">SUBMIT</button>
+      </form>
+    </div>
+  </body>
+</html>

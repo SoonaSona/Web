@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <title>บันทึกการสั่งอาหารผู้ป่วยใน</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background: #ffffff;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      .page-title {
+        font-size: 32px;
+        font-weight: 700;
+      }
+
+      .sub-title {
+        font-size: 14px;
+        color: #6c757d;
+      }
+
+      .form-section {
+        margin-top: 20px;
+      }
+
+      label {
+        font-size: 14px;
+        margin-bottom: 6px;
+      }
+
+      .form-control,
+      .form-select {
+        background: #f4f6f9;
+        border: none;
+        height: 44px;
+      }
+
+      textarea.form-control {
+        height: 44px;
+        resize: none;
+      }
+
+      .add-btn {
+        height: 44px;
+        width: 80px;
+        border-radius: 10px;
+      }
+
+      .bottom-actions {
+        position: fixed;
+        bottom: 20px;
+        right: 30px;
+      }
+
+      .bottom-actions .btn {
+        min-width: 100px;
+        height: 44px;
+        border-radius: 10px;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container-fluid px-5">
+      <!-- Title -->
+      <div class="mt-4">
+        <div class="page-title">บันทึกการสั่งอาหารผู้ป่วยใน</div>
+        <div class="sub-title">ข้อมูลการบันทึก</div>
+        <hr />
+      </div>
+
+      <!-- Header Info -->
+      <div class="row mb-4">
+        <div class="col">เลขประจำตัวผู้ป่วย</div>
+        <div class="col">ชื่อ-นามสกุล</div>
+        <div class="col">วันที่รับประทาน</div>
+      </div>
+
+      <!-- Form -->
+      <div class="form-section">
+        <!-- Row 1 -->
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label>ประเภทอาหาร</label>
+            <select class="form-select"></select>
+          </div>
+
+          <div class="col-md-4">
+            <label>ชื่อรายการ</label>
+            <select class="form-select"></select>
+          </div>
+
+          <div class="col-md-2">
+            <label>จำนวน</label>
+            <input type="number" class="form-control" value="1" />
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label>อาหารเสริม</label>
+            <select class="form-select"></select>
+          </div>
+
+          <div class="col-md-2">
+            <label>จำนวน</label>
+            <input type="number" class="form-control" value="0" />
+          </div>
+
+          <div class="col-md-4">
+            <label>แคลอรี่</label>
+            <input type="text" class="form-control" />
+          </div>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="row mb-3">
+          <div class="col-md-10">
+            <label>อาหารเฉพาะโรค</label>
+            <select class="form-select"></select>
+          </div>
+        </div>
+
+        <!-- Row 4 -->
+        <div class="row mb-3 align-items-end">
+          <div class="col-md-10">
+            <label>แพ้อาหาร</label>
+            <input class="form-control" />
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary add-btn">Add</button>
+          </div>
+        </div>
+
+        <!-- Row 5 -->
+        <div class="row mb-3 align-items-end">
+          <div class="col-md-10">
+            <label>หมายเหตุ</label>
+            <input class="form-control" />
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary add-btn">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Buttons -->
+    <div class="bottom-actions">
+      <button class="btn btn-danger me-2">ยกเลิก</button>
+      <button class="btn btn-primary">บันทึก</button>
+    </div>
+  </body>
+</html>
