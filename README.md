@@ -25,6 +25,8 @@ npm install express ejs nodemon
 npm install express-ejs-layouts
 ```
 
+npm install mysql2 express-session
+
 5. Run the app
 
 ```bash

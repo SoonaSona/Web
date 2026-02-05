@@ -4,178 +4,267 @@
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
       <h4 class="fw-bold mb-0 text-primary">
-        <i class="bi bi-basket3-fill"></i> บันทึกการสั่งอาหาร (Diet Order)
+        <i class="bi bi-basket3-fill"></i> ระบบโภชนาการ (Diet Order)
       </h4>
-      <span class="text-muted small">ระบบบริหารจัดการโภชนาการผู้ป่วยใน</span>
+      <span class="text-muted small">ระบบบริหารจัดการอาหารผู้ป่วยใน</span>
     </div>
     <div class="text-end">
       <div class="input-group">
-        <span class="input-group-text bg-white"
-          ><i class="bi bi-calendar-event"></i
-        ></span>
-        <input type="date" class="form-control" id="currentDate" />
+        <span class="input-group-text bg-white"><i class="bi bi-calendar-event"></i></span>
+        <input type="date" class="form-control" id="currentDateDisplay" disabled />
       </div>
     </div>
   </div>
 
-  <div class="card border-0 shadow-sm mb-4 bg-primary-subtle">
-    <div class="card-body">
-      <h6 class="fw-bold text-primary mb-3">
-        <i class="bi bi-person-vcard"></i> ข้อมูลผู้ป่วย
-      </h6>
-      <div class="row g-3">
-        <div class="col-md-3">
-          <label class="form-label small text-muted"
-            >เลขประจำตัวผู้ป่วย (HN)</label
-          >
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="ระบุ HN..." />
-            <button class="btn btn-primary">
-              <i class="bi bi-search"></i>ค้นหา
-            </button>
+  <div class="row g-3">
+    
+    <div class="col-lg-10">
+      <form action="/main/save-food" method="POST">
+        <input type="hidden" id="realDate" name="order_date">
+
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            
+            <div class="row g-3 mb-4">
+               <div class="col-md-5">
+                 <label class="form-label fw-bold text-primary"><i class="bi bi-search"></i> ค้นหาผู้ป่วย (HN)</label>
+                 <select class="form-select form-select-lg" name="hn" id="selectHN" onchange="selectPatient()" required>
+                    <option value="" selected disabled>-- เลือกรายชื่อ --</option>
+                    <% if(locals.admittedList) { %>
+                        <% admittedList.forEach(function(p) { %>
+                            <option 
+                                value="<%= p.hn %>" 
+                                data-name="<%= p.first_name %> <%= p.last_name %>"
+                                data-ward="<%= p.room_no %>"
+                                data-bed="<%= p.bed_no %>"
+                            >
+                                ห้อง <%= p.room_no %>-<%= p.bed_no %> : <%= p.first_name %> <%= p.last_name %>
+                            </option>
+                        <% }); %>
+                    <% } %>
+                 </select>
+               </div>
+               
+               <input type="hidden" id="patientName" name="patient_name">
+               <input type="hidden" id="patientWard" name="ward">
+               <input type="hidden" id="patientBed" name="bed">
+
+               <div class="col-md-7">
+                  <label class="form-label fw-bold text-muted">ผู้ป่วยที่เลือก:</label>
+                  <div class="d-flex align-items-center p-2 bg-light rounded border" id="selectedInfo" style="height: 48px;">
+                     <span class="text-muted small ps-2">กรุณาเลือกผู้ป่วยจากรายการ...</span>
+                  </div>
+               </div>
+            </div>
+
+            <hr class="text-muted opacity-25">
+
+            <h6 class="fw-bold text-dark mb-3"><i class="bi bi-egg-fried"></i> รายละเอียดเมนู</h6>
+            
+            <div class="row g-3 mb-3">
+              <div class="col-md-3">
+                <label class="form-label">ประเภท</label>
+                <select class="form-select bg-primary-subtle border-primary-subtle" name="food_type">
+                  <option value="Normal">ธรรมดา (Normal)</option>
+                  <option value="Soft">อ่อน (Soft)</option>
+                  <option value="Liquid">เหลว (Liquid)</option>
+                  <option value="Tube">ทางสายยาง (Tube)</option>
+                </select>
+              </div>
+              <div class="col-md-7">
+                <label class="form-label">รายการอาหาร</label>
+                <select class="form-select bg-primary-subtle border-primary-subtle" name="menu_item" required>
+                  <option selected disabled value="">-- เลือกเมนู --</option>
+                  <% if(locals.foodList) { %>
+                      <% foodList.forEach(function(menu) { %>
+                          <option value="<%= menu.name %>"><%= menu.name %> (<%= menu.type %>)</option>
+                      <% }); %>
+                  <% } %>
+                </select>
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">จำนวน</label>
+                <input type="number" class="form-control text-center" value="1" min="1" name="quantity"/>
+              </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label small">อาหารเสริม</label>
+                    <div class="input-group input-group-sm">
+                        <select class="form-select" name="supplement">
+                            <option value="None">ไม่มี</option>
+                            <option value="Ensure">Ensure</option>
+                            <option value="Glucerna">Glucerna</option>
+                            <option value="Milk">นมจืด</option>
+                        </select>
+                        <input type="number" class="form-control" placeholder="0" name="supplement_qty" value="0">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small">โรคเฉพาะ</label>
+                    <select class="form-select form-select-sm" name="disease_specific">
+                        <option value="None">-</option>
+                        <option value="DM">เบาหวาน</option>
+                        <option value="CKD">โรคไต</option>
+                        <option value="HT">ความดัน</option>
+                    </select>
+                </div>
+                 <div class="col-md-4">
+                    <label class="form-label small">Kcal</label>
+                    <input type="text" class="form-control form-control-sm" placeholder="ระบุ" name="calories">
+                </div>
+            </div>
+
+            <div class="row g-3 mt-2">
+                 <div class="col-md-6">
+                    <label class="text-danger fw-bold small"><i class="bi bi-exclamation-triangle"></i> แพ้อาหาร</label>
+                    <input type="text" class="form-control" name="allergies" placeholder="-">
+                 </div>
+                 <div class="col-md-6">
+                    <label class="fw-bold small">หมายเหตุ</label>
+                    <input type="text" class="form-control" name="additional_notes" placeholder="-">
+                 </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-top text-end">
+                <button type="submit" class="btn btn-success px-5 shadow">
+                    <i class="bi bi-check-lg"></i> บันทึกข้อมูล
+                </button>
+            </div>
+            
           </div>
         </div>
+      </form>
+    </div>
 
-        <div class="col-md-4">
-          <label class="form-label small text-muted">ชื่อ-นามสกุล</label>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="ระบุชื่อผู้ป่วย..."
-          />
+    <div class="col-lg-2">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white border-bottom py-3 text-center">
+          <h6 class="mb-0 small fw-bold text-uppercase text-secondary">
+             <i class="bi bi-clock-history"></i> ล่าสุด
+          </h6>
         </div>
+        <div class="card-body p-2" style="max-height: 600px; overflow-y: auto;">
+          
+            <% if(locals.orderList && orderList.length > 0) { %>
+                <div class="d-flex flex-column gap-2">
+                    <% orderList.forEach(function(order) { %>
+                        <div class="p-2 rounded bg-white border shadow-sm position-relative">
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle" style="font-size: 0.7rem;">
+                                    <%= order.ward %>-<%= order.bed %>
+                                </span>
+                                <small style="font-size: 0.65rem;" class="text-muted">
+                                    <%= new Date(order.created_at).toLocaleTimeString('th-TH', {hour: '2-digit', minute:'2-digit'}) %>
+                                </small>
+                            </div>
 
-        <div class="col-md-3">
-          <label class="form-label small text-muted">Ward / ตึก</label>
-          <select class="form-select">
-            <option selected disabled>-- เลือกตึก --</option>
-            <option>อายุรกรรมชาย (01)</option>
-            <option>ศัลยกรรม (02)</option>
-            <option>สูตินารีเวช (03)</option>
-            <option>กุมารเวชกรรม (04)</option>
-          </select>
-        </div>
+                            <div class="text-truncate small fw-bold text-dark mb-1" style="font-size: 0.8rem;" title="<%= order.patient_name %>">
+                                <%= order.patient_name %>
+                            </div>
+                            
+                            <div class="text-truncate small text-secondary mb-2" style="font-size: 0.7rem;">
+                                <i class="bi bi-dot"></i> <%= order.menu_item %>
+                            </div>
 
-        <div class="col-md-2">
-          <label class="form-label small text-muted">เตียง</label>
-          <input type="text" class="form-control text-center" placeholder="-" />
+                            <button class="btn btn-outline-primary btn-sm w-100 py-0" style="font-size: 0.7rem;"
+                                onclick="viewDetails(
+                                    '<%= order.patient_name %>', 
+                                    '<%= order.hn %>', 
+                                    '<%= order.ward %>', 
+                                    '<%= order.bed %>', 
+                                    '<%= order.menu_item %>', 
+                                    '<%= order.food_type %>', 
+                                    '<%= order.allergies %>', 
+                                    '<%= order.additional_notes %>',
+                                    '<%= order.age %>',
+                                    '<%= order.gender %>',
+                                    '<%= order.weight %>',
+                                    '<%= order.height %>'
+                                )">
+                                ดูข้อมูล
+                            </button>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="text-center p-4 text-muted opacity-50">
+                    <i class="bi bi-inbox fs-2"></i>
+                    <p class="small mt-1">ยังไม่มีรายการ</p>
+                </div>
+            <% } %>
+
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white py-3 border-bottom">
-      <h6 class="mb-0 fw-bold">
-        <i class="bi bi-egg-fried"></i> รายละเอียดเมนูอาหาร
-      </h6>
-    </div>
-    <div class="card-body p-4">
-      <div class="row g-3 mb-4">
-        <div class="col-md-3">
-          <label class="form-label fw-bold">ประเภทอาหาร</label>
-          <select class="form-select bg-light">
-            <option selected>ธรรมดา (Normal)</option>
-            <option>อ่อน (Soft)</option>
-            <option>เหลว (Liquid)</option>
-            <option>ทางสายยาง (Tube)</option>
-          </select>
-        </div>
-        <div class="col-md-7">
-          <label class="form-label fw-bold">ชื่อรายการอาหาร</label>
-          <select class="form-select bg-light">
-            <option selected disabled>-- เลือกเมนูอาหาร --</option>
-            <option>ข้าวต้มหมู + ไข่ลวก</option>
-            <option>ข้าวผัดอเมริกัน</option>
-            <option>แกงจืดเต้าหู้หมูสับ + ข้าวสวย</option>
-            <option>ก๋วยเตี๋ยวไก่ตุ๋น</option>
-            <option>ข้าวต้มปลา</option>
-          </select>
-        </div>
-        <div class="col-md-2">
-          <label class="form-label fw-bold">จำนวน (มื้อ)</label>
-          <input
-            type="number"
-            class="form-control text-center"
-            value="1"
-            min="1"
-          />
-        </div>
+<div class="modal fade" id="orderDetailModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-info-subtle">
+        <h5 class="modal-title fw-bold">รายละเอียด</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-
-      <div class="row g-3 mb-4">
-        <div class="col-md-4">
-          <label class="form-label">อาหารเสริม (Supplement)</label>
-          <div class="input-group">
-            <select class="form-select">
-              <option selected>ไม่มี</option>
-              <option>นมจืด</option>
-              <option>Ensure</option>
-              <option>Glucerna</option>
-            </select>
-            <input
-              type="number"
-              class="form-control"
-              style="max-width: 80px"
-              placeholder="qty"
-              value="1"
-              min="0"
-            />
-          </div>
+      <div class="modal-body">
+        <div class="text-center mb-3">
+            <h5 id="mName" class="fw-bold text-primary mb-0"></h5>
+            <span class="badge bg-secondary" id="mHN"></span>
         </div>
-
-        <div class="col-md-3">
-          <label class="form-label">จำกัดแคลอรี่ (Kcal)</label>
-          <input type="text" class="form-control" placeholder="เช่น 1800" />
+        <div class="row g-2 mb-3 bg-light p-2 rounded small">
+            <div class="col-6"><strong>ตึก/เตียง:</strong> <span id="mWardBed"></span></div>
+            <div class="col-6"><strong>เพศ/อายุ:</strong> <span id="mAgeGender"></span></div>
+            <div class="col-6"><strong>น้ำหนัก:</strong> <span id="mWeight"></span> kg</div>
+            <div class="col-6"><strong>ส่วนสูง:</strong> <span id="mHeight"></span> cm</div>
         </div>
-
-        <div class="col-md-5">
-          <label class="form-label">อาหารเฉพาะโรค (Disease)</label>
-          <select class="form-select">
-            <option selected>ไม่ระบุ</option>
-            <option>เบาหวาน (DM)</option>
-            <option>โรคไต (CKD)</option>
-            <option>ความดัน (HT)</option>
-            <option>ไขมันต่ำ (Low Fat)</option>
-          </select>
-        </div>
-      </div>
-
-      <hr class="my-4 dashed-line" />
-
-      <div class="row g-3">
-        <div class="col-md-6">
-          <label class="form-label text-danger fw-bold">
-            <i class="bi bi-exclamation-triangle-fill"></i> แพ้อาหาร (Allergies)
-          </label>
-          <textarea
-            class="form-control allergy-input"
-            rows="2"
-            placeholder="ระบุสิ่งที่แพ้ (หากไม่มีให้เว้นว่าง)"
-          ></textarea>
-        </div>
-        <div class="col-md-6">
-          <label class="form-label fw-bold">หมายเหตุเพิ่มเติม</label>
-          <textarea
-            class="form-control"
-            rows="2"
-            placeholder="ระบุเพิ่มเติม..."
-          ></textarea>
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-end gap-2 mt-5">
-        <button class="btn btn-secondary px-4">
-          <i class="bi bi-arrow-counterclockwise"></i> ล้างค่า
-        </button>
-        <button class="btn btn-success px-5 shadow">
-          <i class="bi bi-save"></i> บันทึกข้อมูล
-        </button>
+        <hr>
+        <p class="mb-1"><strong>เมนู:</strong> <span id="mMenu" class="text-success fw-bold"></span></p>
+        <p class="mb-1"><strong>ประเภท:</strong> <span id="mType"></span></p>
+        <p class="mb-1 text-danger"><strong>แพ้:</strong> <span id="mAllergy"></span></p>
+        <p class="mb-1 text-muted"><strong>Note:</strong> <span id="mNote"></span></p>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  document.getElementById("currentDate").valueAsDate = new Date();
+    const today = new Date();
+    document.getElementById("currentDateDisplay").valueAsDate = today;
+    document.getElementById("realDate").valueAsDate = today;
+
+    function selectPatient() {
+        const select = document.getElementById("selectHN");
+        const opt = select.options[select.selectedIndex];
+        
+        const name = opt.getAttribute("data-name");
+        const ward = opt.getAttribute("data-ward");
+        const bed = opt.getAttribute("data-bed");
+
+        document.getElementById("patientName").value = name;
+        document.getElementById("patientWard").value = ward;
+        document.getElementById("patientBed").value = bed;
+
+        document.getElementById("selectedInfo").innerHTML = `
+            <span class="fw-bold text-primary fs-5 me-3">${name}</span>
+            <span class="badge bg-success me-1">ตึก ${ward}</span> 
+            <span class="badge bg-warning text-dark">เตียง ${bed}</span>
+        `;
+    }
+
+    function viewDetails(name, hn, ward, bed, menu, type, allergy, note, age, gender, w, h) {
+        document.getElementById('mName').innerText = name;
+        document.getElementById('mHN').innerText = hn;
+        document.getElementById('mWardBed').innerText = ward + ' / ' + bed;
+        document.getElementById('mAgeGender').innerText = (gender || '-') + ' / ' + (age || '-') + ' ปี';
+        document.getElementById('mWeight').innerText = w || '-';
+        document.getElementById('mHeight').innerText = h || '-';
+        document.getElementById('mType').innerText = type;
+        document.getElementById('mMenu').innerText = menu;
+        document.getElementById('mAllergy').innerText = allergy || '-';
+        document.getElementById('mNote').innerText = note || '-';
+
+        const myModal = new bootstrap.Modal(document.getElementById('orderDetailModal'));
+        myModal.show();
+    }
 </script>

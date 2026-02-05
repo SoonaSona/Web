@@ -28,21 +28,25 @@
                         </tr>
                     </thead>
                     <tbody id="tableBody">
-                        <% patients.forEach(function(p) { %>
-                            <tr style="cursor: pointer;" onclick="openPatientData('<%= p.hn %>')">
-                                <td class="ps-3"><span class="badge bg-info text-dark"><%= p.bed %></span></td>
-                                <td><%= p.hn %></td>
-                                <td class="fw-bold text-primary"><%= p.name %></td>
-                                <td><%= p.doctor %></td>
-                                <td><span class="badge bg-warning text-dark"><%= p.dx %></span></td>
-                                <td class="small text-muted"><%= p.vitals %></td>
-                                <td class="text-end pe-3">
-                                    <button class="btn btn-sm btn-outline-primary rounded-pill">
-                                        <i class="bi bi-eye"></i> ดูข้อมูล
-                                    </button>
-                                </td>
-                            </tr>
-                        <% }); %>
+                        <% if (patients.length === 0) { %>
+                            <tr><td colspan="7" class="text-center py-4 text-muted">ไม่พบผู้ป่วยที่ Admit ในขณะนี้</td></tr>
+                        <% } else { %>
+                            <% patients.forEach(function(p) { %>
+                                <tr style="cursor: pointer;" onclick="openPatientData('<%= p.hn %>')">
+                                    <td class="ps-3"><span class="badge bg-info text-dark"><%= p.bed %></span></td>
+                                    <td><%= p.hn %></td>
+                                    <td class="fw-bold text-primary"><%= p.name %></td>
+                                    <td><%= p.doctor %></td>
+                                    <td><span class="badge bg-warning text-dark"><%= p.dx %></span></td>
+                                    <td class="small text-muted"><%= p.vitals %></td>
+                                    <td class="text-end pe-3">
+                                        <button class="btn btn-sm btn-outline-primary rounded-pill">
+                                            <i class="bi bi-eye"></i> ดูข้อมูล
+                                        </button>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } %>
                     </tbody>
                 </table>
             </div>
@@ -95,8 +99,75 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="addNoteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/main/save-nurse-note" method="POST">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square"></i> เขียนบันทึกพยาบาล</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="hn" id="noteHn">
+                    
+                    <div class="mb-3">
+                        <label>เวลา</label>
+                        <input type="time" name="note_time" class="form-control" required value="<%= new Date().toTimeString().slice(0,5) %>">
+                    </div>
+                    <div class="mb-3">
+                        <label>Focus (เรื่องที่บันทึก)</label>
+                        <input type="text" name="focus" class="form-control" placeholder="เช่น ปวดท้อง, ไข้ขึ้น, รับใหม่" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>รายละเอียด (SOAP / Narrative)</label>
+                        <textarea name="note_text" class="form-control" rows="4" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">บันทึกข้อมูล</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editVitalsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/main/update-vitals" method="POST">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title"><i class="bi bi-gear-fill"></i> อัปเดตข้อมูลผู้ป่วย</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="hn" id="vitalsHn">
+                    <input type="hidden" name="an" id="vitalsAn"> 
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label>น้ำหนัก (kg)</label>
+                            <input type="number" step="0.01" name="weight" id="inputWeight" class="form-control">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label>ส่วนสูง (cm)</label>
+                            <input type="number" step="0.01" name="height" id="inputHeight" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label>Vital Signs ล่าสุด (Text)</label>
+                        <input type="text" name="latest_vitals" id="inputVitals" class="form-control" placeholder="เช่น BP:120/80 P:80">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-warning">อัปเดต</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
-    // รับข้อมูลจาก Server
+    // 1. รับข้อมูลจาก Server
     const patientsDB = <%- JSON.stringify(patients) %>;
     
     // แปลงเป็น Object เพื่อให้ค้นหาด้วย HN ง่ายๆ
@@ -110,32 +181,34 @@
         mainModal = new bootstrap.Modal(document.getElementById("mainModal"));
     });
 
-    // ฟังก์ชันเปิด Modal และโหลดข้อมูลใส่ทุก Tab
+    // 2. ฟังก์ชันเปิด Modal และโหลดข้อมูลใส่ทุก Tab
     function openPatientData(hn) {
         const data = mockDB[hn];
-        if (!data) return alert("ไม่พบข้อมูล");
+        if (!data) return alert("ไม่พบข้อมูลผู้ป่วย");
 
-        // 1. ตั้งหัวข้อ Modal
+        // Set หัวข้อ Modal
         document.getElementById('modalTitle').innerText = data.name;
         document.getElementById('modalSubtitle').innerText = `HN: ${hn} | AN: ${data.an} | เตียง: ${data.bed}`;
 
-        // 2. ใส่ข้อมูลลงในแต่ละ Tab (HTML Injection)
-
         // --- Tab 1: Profile ---
+        // แก้ไข: ใช้ document แทน ddocument และเพิ่มการเช็คค่าว่างในปุ่ม onclick
         document.getElementById('tab-profile').innerHTML = `
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
-                    <h5 class="text-primary mb-3">ข้อมูลการ Admit</h5>
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="text-primary">ข้อมูลการ Admit</h5>
+                        <button class="btn btn-sm btn-outline-warning" 
+                            onclick="openEditVitals('${data.hn}', '${data.an}', '${data.rawWeight || ''}', '${data.rawHeight || ''}', '${data.vitals || ''}')">
+                            <i class="bi bi-pencil"></i> แก้ไข Vitals
+                        </button>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <p><strong>แพทย์เจ้าของไข้:</strong> ${data.doctor}</p>
-                            <p><strong>วันที่ Admit:</strong> ${data.admitDate}</p>
-                            <p><strong>อายุ:</strong> ${data.age} ปี</p>
+                            <p><strong>Admit:</strong> ${data.admitDate}</p>
+                            <p><strong>อายุ:</strong> ${data.age || '-'} ปี</p>
                         </div>
                         <div class="col-md-6">
-                            <div class="alert alert-warning">
-                                <strong>Diagnosis (Dx):</strong> ${data.dx}
-                            </div>
                             <div class="alert alert-info py-2">
                                 <strong>Vital Signs:</strong> ${data.vitals}
                             </div>
@@ -154,14 +227,14 @@
                         <tr><th>เวลา</th><th>ประเภท</th><th>รายการ</th><th>สถานะ</th></tr>
                     </thead>
                     <tbody>
-                        ${data.orders.map(o => `
+                        ${data.orders && data.orders.length > 0 ? data.orders.map(o => `
                             <tr>
                                 <td>${o.date}</td>
                                 <td><span class="badge ${o.type === 'Continue' ? 'bg-warning text-dark' : 'bg-success'}">${o.type}</span></td>
                                 <td>${o.item}</td>
                                 <td><i class="bi bi-check-circle-fill text-success"></i> ${o.status}</td>
                             </tr>
-                        `).join('')}
+                        `).join('') : '<tr><td colspan="4" class="text-center text-muted">ไม่มีคำสั่งแพทย์</td></tr>'}
                     </tbody>
                 </table>
             </div>
@@ -169,21 +242,26 @@
 
         // --- Tab 3: Notes ---
         document.getElementById('tab-notes').innerHTML = `
-            <h5 class="text-primary mb-3">บันทึกทางการพยาบาล (Nurse Note)</h5>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="text-primary mb-0">บันทึกทางการพยาบาล</h5>
+                <button class="btn btn-sm btn-success" onclick="openAddNote('${data.hn}')">
+                    <i class="bi bi-plus-lg"></i> เขียน Note ใหม่
+                </button>
+            </div>
             <div class="bg-white rounded shadow-sm p-3">
                 <table class="table table-hover mb-0">
                     <thead class="table-info">
                         <tr><th style="width:15%">เวลา</th><th style="width:20%">Focus</th><th>บันทึก (SOAP)</th><th>ผู้บันทึก</th></tr>
                     </thead>
                     <tbody>
-                        ${data.nurseNotes.map(n => `
+                        ${data.nurseNotes && data.nurseNotes.length > 0 ? data.nurseNotes.map(n => `
                             <tr>
                                 <td>${n.time}</td>
                                 <td class="fw-bold text-primary">${n.focus}</td>
                                 <td>${n.text}</td>
                                 <td class="text-muted small">${n.recorder}</td>
                             </tr>
-                        `).join('')}
+                        `).join('') : '<tr><td colspan="4" class="text-center text-muted">ยังไม่มีบันทึก</td></tr>'}
                     </tbody>
                 </table>
             </div>
@@ -198,23 +276,24 @@
                         <tr><th>ชื่อยา</th><th>ขนาด/วิธีใช้</th><th>เวลา</th><th>การให้ยาล่าสุด</th></tr>
                     </thead>
                     <tbody>
-                        ${data.medication.map(m => `
+                        ${data.medication && data.medication.length > 0 ? data.medication.map(m => `
                             <tr>
                                 <td class="fw-bold">${m.name}</td>
                                 <td>${m.dose} <br><small class="text-muted">${m.route}</small></td>
                                 <td>${m.time}</td>
                                 <td><span class="badge bg-secondary">${m.last_given}</span></td>
                             </tr>
-                        `).join('')}
+                        `).join('') : '<tr><td colspan="4" class="text-center text-muted">ไม่มีรายการยา</td></tr>'}
                     </tbody>
                 </table>
             </div>
         `;
 
         // --- Tab 5: Labs ---
+        // เพิ่มการเช็ค flag ไม่ให้ error กรณี flag เป็น null
         document.getElementById('tab-labs').innerHTML = `
             <h5 class="text-primary mb-3">รายงานผลทางห้องปฏิบัติการ (Lab Results)</h5>
-            ${data.lab.map(l => `
+            ${data.lab && data.lab.length > 0 ? data.lab.map(l => `
                 <div class="card mb-3 border-0 shadow-sm">
                     <div class="card-header bg-white fw-bold border-bottom">${l.name}</div>
                     <div class="card-body p-0">
@@ -222,21 +301,21 @@
                             <thead><tr><th>Test</th><th>Result</th><th>Unit</th><th>Flag</th></tr></thead>
                             <tbody>
                                 ${l.items.map(i => `
-                                    <tr class="${i.flag.includes('(L)') || i.flag.includes('(H)') ? 'table-danger' : ''}">
+                                    <tr class="${i.flag && (i.flag.includes('(L)') || i.flag.includes('(H)')) ? 'table-danger' : ''}">
                                         <td>${i.test}</td>
                                         <td class="fw-bold">${i.result}</td>
                                         <td>${i.unit}</td>
-                                        <td>${i.flag}</td>
+                                        <td>${i.flag || '-'}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
                         </table>
                     </div>
                 </div>
-            `).join('')}
+            `).join('') : '<p class="text-center text-muted mt-4">ไม่พบผล Lab</p>'}
         `;
 
-        // 3. รีเซ็ตให้แสดง Tab แรกเสมอ (Profile) เวลาเปิดใหม่
+        // 3. รีเซ็ตให้แสดง Tab แรกเสมอ
         const firstTabEl = document.querySelector('#patientTabs button[data-bs-target="#tab-profile"]');
         const firstTab = new bootstrap.Tab(firstTabEl);
         firstTab.show();
@@ -252,4 +331,23 @@
             row.style.display = row.innerText.toLowerCase().includes(v) ? "" : "none";
         });
     });
+
+    // เปิด Modal เขียน Note
+    function openAddNote(hn) {
+        document.getElementById('noteHn').value = hn; 
+        new bootstrap.Modal(document.getElementById('addNoteModal')).show();
+    }
+
+    // เปิด Modal แก้ไข Vitals
+    function openEditVitals(hn, an, w, h, v) {
+        document.getElementById('vitalsHn').value = hn;
+        document.getElementById('vitalsAn').value = an;
+        
+        // ตรวจสอบค่าก่อนใส่ (ถ้าเป็น null ให้ใส่ค่าว่าง)
+        document.getElementById('inputWeight').value = (w && w !== 'null' && w !== 'undefined') ? w : '';
+        document.getElementById('inputHeight').value = (h && h !== 'null' && h !== 'undefined') ? h : '';
+        document.getElementById('inputVitals').value = (v && v !== 'null' && v !== 'undefined') ? v : '';
+
+        new bootstrap.Modal(document.getElementById('editVitalsModal')).show();
+    }
 </script>

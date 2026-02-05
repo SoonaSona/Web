@@ -1,234 +1,293 @@
 <link rel="stylesheet" href="/css/medicine.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    /* ปรับแต่ง Scrollbar ของตารางให้สวยงาม */
+    .table-responsive::-webkit-scrollbar {
+        height: 6px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 3px;
+    }
+    /* พื้นหลัง Readonly ให้ดูต่างจากช่องปกติ */
+    .form-control:read-only {
+        background-color: #e9ecef;
+    }
+</style>
 
 <div class="container-fluid h-100 d-flex flex-column p-0">
 
-    <div class="card border-0 shadow-sm mb-2 bg-white">
+    <div class="card border-0 shadow-sm mb-3 bg-white">
         <div class="card-body p-3">
-            
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div class="d-flex align-items-center">
-                    <div class="bg-primary text-white rounded p-2 me-3">
+                    <div class="bg-primary text-white rounded p-2 me-3 shadow-sm">
                         <i class="bi bi-capsule fs-4"></i>
                     </div>
                     <div>
                         <h5 class="fw-bold mb-0 text-primary">Medication Order</h5>
-                        <small class="text-muted">ลงทะเบียนจัดยาผู้ป่วยใน</small>
+                        <small class="text-muted d-none d-sm-block">ระบบบริหารจัดการยาผู้ป่วยใน</small>
                     </div>
                 </div>
-
-                <div class="d-flex gap-2">
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-light">วันที่</span>
-                        <input type="date" class="form-control" id="currentDate">
-                    </div>
-                    <select class="form-select form-select-sm" style="width: 150px;">
-                        <option selected>All Wards</option>
-                        <option>Ward 01</option>
-                        <option>Ward 02</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="d-flex flex-wrap justify-content-between align-items-end gap-2">
                 
-                <div class="btn-group" role="group">
-                    <input type="radio" class="btn-check" name="level" id="lvlAll" autocomplete="off" checked>
-                    <label class="btn btn-sm btn-outline-primary" for="lvlAll">ทั้งหมด</label>
-                  
-                    <input type="radio" class="btn-check" name="level" id="lvlIRx" autocomplete="off">
-                    <label class="btn btn-sm btn-outline-primary" for="lvlIRx">IRx</label>
-                  
-                    <input type="radio" class="btn-check" name="level" id="lvlTRx" autocomplete="off">
-                    <label class="btn btn-sm btn-outline-primary" for="lvlTRx">TRx</label>
-
-                    <input type="radio" class="btn-check" name="level" id="lvlEMx" autocomplete="off">
-                    <label class="btn btn-sm btn-outline-primary" for="lvlEMx">EMx</label>
-
-                    <input type="radio" class="btn-check" name="level" id="lvlATO" autocomplete="off">
-                    <label class="btn btn-sm btn-outline-primary" for="lvlATO">ATO</label>
-                </div>
-
-                <div class="d-flex gap-2">
-                    <select class="form-select form-select-sm" style="width: 140px;">
-                        <option selected disabled>-- Med Type --</option>
-                        <option>List 1</option>
-                        <option>List 2</option>
-                    </select>
-                    <select class="form-select form-select-sm" style="width: 140px;">
-                        <option selected disabled>-- Status --</option>
-                        <option>รอจัดยา</option>
-                        <option>จ่ายแล้ว</option>
-                    </select>
-                </div>
-
-                <div class="d-flex gap-1 ms-auto">
-                    <button class="btn btn-sm btn-info text-white"><i class="bi bi-basket"></i> จัดยา</button>
-                    <button class="btn btn-sm btn-warning text-dark"><i class="bi bi-search"></i> ตรวจสอบ</button>
-                    <button class="btn btn-sm btn-success"><i class="bi bi-check-circle"></i> จ่ายแล้ว</button>
-                    <button class="btn btn-sm btn-secondary"><i class="bi bi-clock-history"></i> ค้างจ่าย</button>
-                    <div class="vr mx-2"></div>
-                    
-                    <button class="btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#newOrderModal">
-                        <i class="bi bi-plus-lg"></i> Add New
-                    </button>
-                </div>
+                <button class="btn btn-primary shadow-sm" onclick="openModal('add')">
+                    <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">สั่งยาเพิ่ม</span>
+                </button>
             </div>
-
         </div>
     </div>
 
     <div class="card border-0 shadow-sm flex-grow-1 overflow-hidden">
-        <div class="card-body p-0 table-responsive">
-            <table class="table table-hover table-bordered table-striped mb-0 text-nowrap align-middle">
-                <thead class="table-primary sticky-top">
-                    <tr>
-                        <th>Order No.</th>
-                        <th>วันเวลาที่สั่ง</th>
-                        <th>Type</th>
-                        <th class="text-center">เตียง</th>
-                        <th>ชื่อ-นามสกุล</th>
-                        <th>แพทย์ที่สั่ง</th>
-                        <th>ผู้บันทึก</th>
-                        <th class="text-center">จำนวน</th>
-                        <th class="text-end">มูลค่า</th>
-                        <th class="text-center">สถานะ</th> </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="fw-bold text-primary">302603</td>
-                        <td>13/04/2568 10:30</td>
-                        <td><span class="badge bg-info text-dark">IRx</span></td>
-                        <td class="text-center">062</td>
-                        <td>นายโฟก โฟกโฟก</td>
-                        <td>นพ.สมชาย ใจดี</td>
-                        <td>พยาบาลเอ</td>
-                        <td class="text-center">2</td>
-                        <td class="text-end">3.45</td>
-                        <td class="text-center"><span class="badge bg-secondary">ไม่ Screen</span></td>
-                    </tr>
-                    <tr>
-                        <td class="fw-bold text-primary">302604</td>
-                        <td>13/04/2568 11:15</td>
-                        <td><span class="badge bg-warning text-dark">TRx</span></td>
-                        <td class="text-center">063</td>
-                        <td>นางสาวใจ หวังดี</td>
-                        <td>พญ.สมหญิง</td>
-                        <td>พยาบาลบี</td>
-                        <td class="text-center">5</td>
-                        <td class="text-end">120.00</td>
-                        <td class="text-center"><span class="badge bg-success">จ่ายแล้ว</span></td>
-                    </tr>
-                    <% for(let i=0; i<10; i++) { %>
-                    <tr>
-                        <td class="fw-bold text-primary">30260<%= i+5 %></td>
-                        <td>13/04/2568 12:00</td>
-                        <td><span class="badge bg-danger">EMx</span></td>
-                        <td class="text-center">06<%= i+4 %></td>
-                        <td>ผู้ป่วย ทดสอบระบบ</td>
-                        <td>นพ.ทดสอบ</td>
-                        <td>พยาบาลซี</td>
-                        <td class="text-center">1</td>
-                        <td class="text-end">50.00</td>
-                        <td class="text-center"><span class="badge bg-warning text-dark">รอตรวจสอบ</span></td>
-                    </tr>
-                    <% } %>
-                </tbody>
-            </table>
-        </div>
-        <div class="card-footer bg-white small text-muted">
-            <div class="d-flex justify-content-between">
-                <span>ทั้งหมด 12 รายการ</span>
-                <span>ยอดรวมมูลค่า: 623.45 บาท</span>
+        <div class="card-body p-0">
+            <div class="table-responsive h-100">
+                <table class="table table-hover table-bordered table-striped mb-0 align-middle text-nowrap">
+                    <thead class="table-primary sticky-top z-1">
+                        <tr>
+                            <th>Order No.</th>
+                            <th class="d-none d-md-table-cell">Date</th>
+                            <th>Type</th>
+                            <th>HN</th>
+                            <th>ผู้ป่วย</th>
+                            <th class="text-center">Ward</th>
+                            <th>รายการยา</th>
+                            <th class="d-none d-lg-table-cell">แพทย์</th>
+                            <th class="text-end">ราคา</th>
+                            <th class="text-center" style="min-width: 100px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(locals.orders && orders.length > 0) { %>
+                            <% orders.forEach(function(item) { %>
+                                <tr>
+                                    <td class="fw-bold text-primary small"><%= item.order_no %></td>
+                                    
+                                    <td class="d-none d-md-table-cell small">
+                                        <%= new Date(item.created_at).toLocaleDateString('th-TH') %>
+                                        <br>
+                                        <small class="text-muted"><%= new Date(item.created_at).toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'}) %></small>
+                                    </td>
+                                    
+                                    <td>
+                                        <% let badgeColor = item.type === 'EMx' ? 'bg-danger' : (item.type === 'TRx' ? 'bg-warning text-dark' : 'bg-info text-dark'); %>
+                                        <span class="badge <%= badgeColor %>"><%= item.type %></span>
+                                    </td>
+                                    
+                                    <td class="small fw-bold"><%= item.hn %></td>
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 150px;" title="<%= item.first_name %> <%= item.last_name %>">
+                                            <%= item.first_name %> <%= item.last_name %>
+                                        </div>
+                                    </td>
+                                    
+                                    <td class="text-center">
+                                        <% if(item.room_no) { %>
+                                            <span class="badge bg-secondary"><%= item.room_no %>-<%= item.bed_no %></span>
+                                        <% } else { %>
+                                            <span class="text-muted">-</span>
+                                        <% } %>
+                                    </td>
+                                    
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 200px;" title="<%= item.med_list %>">
+                                            <%= item.med_list %>
+                                        </div>
+                                    </td>
+                                    
+                                    <td class="d-none d-lg-table-cell small text-muted"><%= item.doctor_name %></td>
+                                    <td class="text-end fw-bold"><%= item.total_price %></td>
+                                    
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-warning me-1 shadow-sm" 
+                                            data-order='<%= JSON.stringify(item) %>'
+                                            onclick="editOrder(this)">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </button>
+                                        
+                                        <a href="/main/delete-medicine/<%= item.id %>" 
+                                           class="btn btn-sm btn-danger shadow-sm"
+                                           onclick="return confirm('ยืนยันลบรายการ <%= item.order_no %>?');">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr><td colspan="10" class="text-center text-muted p-5">ไม่พบรายการสั่งยา</td></tr>
+                        <% } %>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-
 </div>
 
-<div class="modal fade" id="newOrderModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered"> 
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">
-                    <i class="bi bi-capsule me-2"></i>New Medication Order
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form class="row g-3">
-                    <div class="col-12">
-                        <h6 class="border-bottom pb-2 text-primary fw-bold">ข้อมูลผู้ป่วย</h6>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">HN</label>
-                        <input type="text" class="form-control" placeholder="Search HN...">
-                    </div>
-                    <div class="col-md-5">
-                        <label class="form-label">ชื่อ-นามสกุล</label>
-                        <input type="text" class="form-control" >
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Ward</label>
-                        <select class="form-select">
-                            <option>Ward 01</option>
-                            <option>Ward 02</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">เตียง</label>
-                        <input type="text" class="form-control" placeholder="No.">
-                    </div>
-
-                    <div class="col-12 mt-4">
-                        <h6 class="border-bottom pb-2 text-primary fw-bold">รายการยา (Medication)</h6>
-                    </div>
-                    
-                    <div class="col-md-4">
-                        <label class="form-label">ประเภท Order</label>
-                        <div class="btn-group w-100" role="group">
-                            <input type="radio" class="btn-check" name="modalLvl" id="modalIRx" checked>
-                            <label class="btn btn-outline-primary" for="modalIRx">IRx</label>
-                            <input type="radio" class="btn-check" name="modalLvl" id="modalTRx">
-                            <label class="btn btn-outline-warning text-dark" for="modalTRx">TRx</label>
-                            <input type="radio" class="btn-check" name="modalLvl" id="modalEMx">
-                            <label class="btn btn-outline-danger" for="modalEMx">EMx</label>
+            <form action="/main/save-medicine" method="POST">
+                
+                <input type="hidden" name="id" id="inputId"> 
+                
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="modalTitle">
+                        <i class="bi bi-capsule me-2"></i>รายละเอียดการสั่งยา
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                
+                <div class="modal-body bg-light">
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-body">
+                            <h6 class="text-primary fw-bold border-bottom pb-2 mb-3">1. ข้อมูลผู้ป่วย (Patient Info)</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6 col-12">
+                                    <label class="form-label small text-muted">เลือกผู้ป่วย (Admitted)</label>
+                                    <select class="form-select" id="selectPatient" onchange="autoFillHN()">
+                                        <option value="">-- เลือกรายชื่อ --</option>
+                                        <% if(locals.patients) { %>
+                                            <% patients.forEach(function(p) { %>
+                                                <option value="<%= p.hn %>" 
+                                                        data-ward="<%= p.room_no %>" 
+                                                        data-bed="<%= p.bed_no %>">
+                                                    <%= p.first_name %> <%= p.last_name %> (HN: <%= p.hn %>)
+                                                </option>
+                                            <% }); %>
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <label class="form-label small text-muted">HN</label>
+                                    <input type="text" class="form-control" name="hn" id="inputHN" readonly required>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <label class="form-label small text-muted">Ward/Bed</label>
+                                    <input type="text" class="form-control" id="displayWard" disabled placeholder="-">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="col-md-8">
-                        <label class="form-label">แพทย์ผู้สั่ง</label>
-                        <select class="form-select">
-                            <option selected>เลือกแพทย์...</option>
-                            <option>นพ.สมชาย ใจดี</option>
-                        </select>
-                    </div>
 
-                    <div class="col-12">
-                        <label class="form-label">รายการยา/เวชภัณฑ์</label>
-                        <textarea class="form-control" rows="3" placeholder="พิมพ์ชื่อยา หรือรหัสยา..."></textarea>
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h6 class="text-primary fw-bold border-bottom pb-2 mb-3">2. ข้อมูลยา (Medication)</h6>
+                            <div class="row g-3">
+                                <div class="col-md-4 col-12">
+                                    <label class="form-label small text-muted">ประเภท (Type)</label>
+                                    <select class="form-select" name="type" id="inputType">
+                                        <option value="IRx">IRx (ผู้ป่วยใน)</option>
+                                        <option value="TRx">TRx (กลับบ้าน)</option>
+                                        <option value="EMx">EMx (ฉุกเฉิน)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-8 col-12">
+                                    <label class="form-label small text-muted">แพทย์ผู้สั่ง</label>
+                                    <input type="text" class="form-control" name="doctor_name" id="inputDoctor" required placeholder="ระบุชื่อแพทย์">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small text-muted">รายการยา</label>
+                                    <textarea class="form-control" name="med_list" id="inputMedList" rows="3" required placeholder="เช่น Paracetamol 500mg..."></textarea>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small text-muted">จำนวน (Qty)</label>
+                                    <input type="number" class="form-control" name="qty" id="inputQty" value="1" min="1">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small text-muted">ราคา (Price)</label>
+                                    <input type="number" class="form-control text-end" name="total_price" id="inputPrice" step="0.01" value="0.00">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">จำนวน (Qty)</label>
-                        <input type="number" class="form-control" value="1">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">ราคาประเมิน (บาท)</label>
-                        <input type="number" class="form-control text-end" placeholder="0.00">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer bg-light">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                    <i class="bi bi-save me-1"></i> บันทึก Order
-                </button>
-            </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-save me-1"></i> บันทึก
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <script>
-    document.getElementById('currentDate').valueAsDate = new Date();
+    const modalEl = document.getElementById('orderModal');
+    const myModal = new bootstrap.Modal(modalEl);
+
+    // ฟังก์ชันเปิด Modal สำหรับเพิ่มใหม่
+    function openModal(mode) {
+        if (mode === 'add') {
+            document.getElementById('modalTitle').innerHTML = '<i class="bi bi-plus-circle me-2"></i> สั่งยาเพิ่ม';
+            
+            // สำคัญ! เคลียร์ ID ให้ว่าง เพื่อให้ Backend รู้ว่าเป็น Insert
+            document.getElementById('inputId').value = ''; 
+            
+            // เคลียร์ค่าอื่นๆ
+            document.getElementById('selectPatient').value = '';
+            document.getElementById('inputHN').value = '';
+            document.getElementById('displayWard').value = '';
+            document.getElementById('inputType').value = 'IRx';
+            document.getElementById('inputDoctor').value = '';
+            document.getElementById('inputMedList').value = '';
+            document.getElementById('inputQty').value = '1';
+            document.getElementById('inputPrice').value = '0.00';
+            
+            myModal.show();
+        }
+    }
+
+    // ฟังก์ชันเปิด Modal สำหรับแก้ไข (ทำงานร่วมกับ data-order ในปุ่ม)
+    function editOrder(btn) {
+        // 1. ดึงข้อมูล JSON จากปุ่มที่กดมาแปลงเป็น Object
+        const data = JSON.parse(btn.getAttribute('data-order'));
+        
+        // 2. เปลี่ยนหัวข้อ Modal
+        document.getElementById('modalTitle').innerHTML = '<i class="bi bi-pencil-square me-2"></i> แก้ไขรายการ (' + data.order_no + ')';
+        
+        // 3. ใส่ ID ลงไปใน Hidden Input (สำคัญมาก! ถ้าไม่มีตัวนี้ Backend จะนึกว่าเพิ่มใหม่)
+        document.getElementById('inputId').value = data.id; 
+        
+        // 4. เอาข้อมูลเดิมไปหยอดใส่ช่อง
+        document.getElementById('inputHN').value = data.hn;
+        
+        // พยายามเลือก Dropdown ให้ตรงกับ HN เดิม
+        const selectBox = document.getElementById('selectPatient');
+        selectBox.value = data.hn;
+        
+        // ถ้า Dropdown เลือกได้ ให้ดึง Ward/Bed มาโชว์
+        if (selectBox.value === data.hn) {
+             autoFillHN(); 
+        } else {
+             // ถ้า HN นี้ออกจาก รพ. ไปแล้ว (ไม่มีใน list admit) ให้โชว์แค่ Ward เก่า
+             document.getElementById('displayWard').value = (data.room_no ? data.room_no + '-' + data.bed_no : '-');
+        }
+
+        document.getElementById('inputType').value = data.type;
+        document.getElementById('inputDoctor').value = data.doctor_name;
+        document.getElementById('inputMedList').value = data.med_list;
+        document.getElementById('inputQty').value = data.qty;
+        document.getElementById('inputPrice').value = data.total_price;
+
+        // 5. เปิด Modal
+        myModal.show();
+    }
+
+    // ฟังก์ชัน Auto-Fill Ward/Bed เมื่อเลือกชื่อใน Dropdown
+    function autoFillHN() {
+        const select = document.getElementById('selectPatient');
+        const opt = select.options[select.selectedIndex];
+        
+        if (opt && opt.value) {
+            document.getElementById('inputHN').value = opt.value;
+            const ward = opt.getAttribute('data-ward');
+            const bed = opt.getAttribute('data-bed');
+            document.getElementById('displayWard').value = (ward && bed) ? ward + '-' + bed : '-';
+        } else {
+             document.getElementById('inputHN').value = '';
+             document.getElementById('displayWard').value = '';
+        }
+    }
 </script>
