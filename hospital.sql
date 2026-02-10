@@ -1,4 +1,0 @@
-ALTER TABLE preadmissions  
-ADD COLUMN age INT NULL,
-ADD COLUMN gender VARCHAR(10) NULL,
-ADD COLUMN diagnosis TEXT NULL;
