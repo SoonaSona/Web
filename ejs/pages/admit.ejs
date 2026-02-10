@@ -1,14 +1,12 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     
-    <link rel="stylesheet" href="/css/admit.css" />
-
     <style>
         /* จัด Layout แบบ Flexbox: บังคับให้อยู่บรรทัดเดียวกัน */
         .page-wrapper {
             display: flex;
             width: 100%;
-            height: calc(100vh - 60px); /* ความสูงเต็มจอ ลบ Header นิดหน่อย */
+            height: calc(100vh - 60px); /* ความสูงเต็มจอ ลบ Header */
             overflow: hidden; /* ห้าม Scroll ที่ Body ให้ไป Scroll ข้างในแทน */
             background-color: #f4f6f9;
         }
@@ -20,7 +18,7 @@
             padding: 20px;
         }
 
-        /* ส่วนขวา: แถบรายชื่อ (ล็อคความกว้าง 300px) */
+        /* ส่วนขวา: แถบรายชื่อ (ล็อคความกว้าง 320px) */
         .right-sidebar {
             width: 320px;
             min-width: 320px; /* ห้ามหด */
@@ -45,16 +43,13 @@
         .case-card:hover {
             border-color: #007bff;
             background-color: #f8f9fa;
-            transform: translateX(-3px); /* ขยับซ้ายนิดนึงตอนชี้ */
+            transform: translateX(-3px);
         }
         .case-card.active {
             border-left: 4px solid #007bff;
             background-color: #e7f1ff;
         }
     </style>
-</head>
-<body>
-
 <div class="page-wrapper">
     
     <div class="left-panel">
@@ -84,6 +79,7 @@
                                     </option>
                                 <% }); %>
                             </select>
+                            
                             <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#addPatientModal">
                                 <i class="bi bi-person-plus-fill"></i> เพิ่ม
                             </button>
@@ -158,7 +154,9 @@
                     <div class="case-card" onclick='loadCase(<%- JSON.stringify(item) %>)'>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="badge bg-primary"><%= item.an %></span>
-                            <small class="text-muted"><%= new Date(item.admit_date).toLocaleDateString('th-TH') %></small>
+                            <small class="text-muted">
+                                <%= item.admit_date ? new Date(item.admit_date).toLocaleDateString('th-TH') : '-' %>
+                            </small>
                         </div>
                         <div class="fw-bold mt-2 text-dark"><%= item.first_name %> <%= item.last_name %></div>
                         <div class="small text-muted">
@@ -192,6 +190,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="addPatientModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -238,77 +237,84 @@
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    // 1. Modal เลือกเตียง
-    const bedModal = new bootstrap.Modal(document.getElementById("bedModal"));
-    document.getElementById("btnChooseBed").addEventListener("click", () => bedModal.show());
+    
+document.addEventListener("DOMContentLoaded", function () {
 
-    function selectBed(bedName) {
-        document.getElementById("selectedBed").value = bedName;
-        bedModal.hide();
+    // Modal เลือกเตียง
+    const bedModalEl = document.getElementById("bedModal");
+    const bedModal = new bootstrap.Modal(bedModalEl);
+
+    const btnChooseBed = document.getElementById("btnChooseBed");
+    if (btnChooseBed) {
+        btnChooseBed.addEventListener("click", function () {
+            bedModal.show();
+        });
     }
+});
 
-    // 2. Auto-fill ข้อมูลคนไข้จาก Dropdown
-    const hnSelect = document.getElementById("hnSelect");
-    hnSelect.addEventListener("change", function() {
-        const option = this.options[this.selectedIndex];
-        if(option.value) {
+function selectBed(bedName) {
+    document.getElementById("selectedBed").value = bedName;
+    const bedModal = bootstrap.Modal.getInstance(document.getElementById("bedModal"));
+    bedModal.hide();
+}
+
+
+// Auto-fill ข้อมูลผู้ป่วย (logic เดิม)
+hnSelect.addEventListener("change", function() {
+    const option = this.options[this.selectedIndex];
+    if(option.value) {
+        try {
             const data = JSON.parse(option.getAttribute("data-info"));
             fillPatientInfo(data);
+        } catch (e) {
+            console.error("JSON parse error:", e);
         }
-    });
+    }
+});
 
-    function fillPatientInfo(data) {
-        document.getElementById("pName").value = data.first_name + " " + data.last_name;
-        document.getElementById("pAge").value = (data.age || "-") + " ปี";
+function fillPatientInfo(data) {
+    document.getElementById("pName").value = data.first_name + " " + data.last_name;
+    document.getElementById("pAge").value = (data.age ? data.age : "-") + " ปี";
+}
+
+// โหลดข้อมูลจาก sidebar (logic เดิม)
+function loadCase(data) {
+    hnSelect.value = data.hn;
+    fillPatientInfo(data);
+
+    document.getElementById("anInput").value = data.an || "";
+    document.getElementById("selectedBed").value = (data.room_no && data.bed_no) ? (data.room_no + "-" + data.bed_no) : "";
+    document.getElementById("doctorSelect").value = data.main_doctor || "";
+    document.getElementById("diagnosisText").value = data.diagnosis || "";
+
+    if(data.admit_date) {
+        const dateObj = new Date(data.admit_date);
+        document.getElementById("admitDate").value = dateObj.toISOString().split('T')[0];
     }
 
-    // 3. ฟังก์ชัน LoadCase (เมื่อคลิกที่ Sidebar ขวามือ)
-    function loadCase(data) {
-        // 3.1 ใส่ค่าลงใน HN Dropdown (ต้องเลือกให้ตรง)
-        hnSelect.value = data.hn; 
-        
-        // 3.2 เรียกฟังก์ชันใส่ชื่อ/อายุ (จากข้อ 2) โดยจำลอง object ขึ้นมา
-        // เพราะ data ที่ได้จาก sidebar มี first_name, last_name, age อยู่แล้ว (จากการแก้ SQL ข้อ 1)
-        fillPatientInfo(data);
-
-        // 3.3 ใส่ค่าอื่นๆ
-        document.getElementById("anInput").value = data.an; // เก็บ AN ไว้
-        document.getElementById("selectedBed").value = data.room_no + "-" + data.bed_no;
-        document.getElementById("doctorSelect").value = data.main_doctor;
-        document.getElementById("diagnosisText").value = data.diagnosis;
-
-        // 3.4 แปลงวันที่ให้เป็น Format YYYY-MM-DD เพื่อใส่ใน input type="date"
-        if(data.admit_date) {
-            const dateObj = new Date(data.admit_date);
-            const dateString = dateObj.toISOString().split('T')[0]; // ตัดเอาแค่ 2023-01-01
-            document.getElementById("admitDate").value = dateString;
-        }
-
-        // Highlight การ์ดที่เลือก
-        document.querySelectorAll('.case-card').forEach(c => c.classList.remove('active'));
-        event.currentTarget.classList.add('active'); // บรรทัดนี้อาจ error ถ้าเรียกจาก code แต่ ok ถ้าคลิก
+    document.querySelectorAll('.case-card').forEach(c => c.classList.remove('active'));
+    if(window.event && window.event.currentTarget) {
+        window.event.currentTarget.classList.add('active');
     }
+}
 
-    // 4. ล้างฟอร์ม
-    function resetForm() {
-        document.getElementById("admitForm").reset();
-        document.getElementById("anInput").value = "";
-        document.getElementById("pName").value = "";
-        document.getElementById("pAge").value = "";
-        document.querySelectorAll('.case-card').forEach(c => c.classList.remove('active'));
+// Auto select HN จาก URL (logic เดิม)
+document.addEventListener("DOMContentLoaded", function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetHn = urlParams.get('hn');
+
+    if (targetHn) {
+        hnSelect.value = targetHn;
+        hnSelect.dispatchEvent(new Event('change'));
+        window.history.replaceState(null, null, window.location.pathname);
     }
+});
 
-    // 5. Search
-    document.getElementById('searchBox').addEventListener('keyup', function() {
-        let val = this.value.toLowerCase();
-        document.querySelectorAll('.case-card').forEach(card => {
-            card.style.display = card.innerText.toLowerCase().includes(val) ? 'block' : 'none';
-        });
-    });
+
+
 </script>
-
-</body>

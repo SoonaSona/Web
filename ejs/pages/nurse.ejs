@@ -1,3 +1,5 @@
+<%- contentFor('body') %>
+
 <div class="container-fluid px-4 py-4">
     <div class="d-flex justify-content-between mb-4 align-items-center">
         <h3 class="fw-bold mb-0 text-primary">
@@ -191,7 +193,6 @@
         document.getElementById('modalSubtitle').innerText = `HN: ${hn} | AN: ${data.an} | เตียง: ${data.bed}`;
 
         // --- Tab 1: Profile ---
-        // แก้ไข: ใช้ document แทน ddocument และเพิ่มการเช็คค่าว่างในปุ่ม onclick
         document.getElementById('tab-profile').innerHTML = `
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
@@ -218,27 +219,54 @@
             </div>
         `;
 
-        // --- Tab 2: Orders ---
-        document.getElementById('tab-orders').innerHTML = `
-            <h5 class="text-primary mb-3">คำสั่งแพทย์ (Doctor's Order)</h5>
-            <div class="bg-white rounded shadow-sm p-3">
-                <table class="table table-striped mb-0">
-                    <thead class="table-primary">
-                        <tr><th>เวลา</th><th>ประเภท</th><th>รายการ</th><th>สถานะ</th></tr>
+        // --- Tab 2: Orders (แก้ไขใหม่: แสดงตารางคำสั่งแพทย์) ---
+        let ordersHtml = `
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="text-primary mb-0">คำสั่งแพทย์ (Doctor Orders)</h5>
+                <a href="/main/nurse/orders/${data.hn}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-pencil-square"></i> จัดการคำสั่งแพทย์
+                </a>
+            </div>
+            <div class="table-responsive bg-white rounded shadow-sm">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="20%">วัน-เวลา</th>
+                            <th width="15%">ประเภท</th>
+                            <th width="40%">รายการคำสั่ง / ชื่อยา</th>
+                            <th width="15%">จำนวน</th>
+                            <th width="10%">สถานะ</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        ${data.orders && data.orders.length > 0 ? data.orders.map(o => `
-                            <tr>
-                                <td>${o.date}</td>
-                                <td><span class="badge ${o.type === 'Continue' ? 'bg-warning text-dark' : 'bg-success'}">${o.type}</span></td>
-                                <td>${o.item}</td>
-                                <td><i class="bi bi-check-circle-fill text-success"></i> ${o.status}</td>
-                            </tr>
-                        `).join('') : '<tr><td colspan="4" class="text-center text-muted">ไม่มีคำสั่งแพทย์</td></tr>'}
-                    </tbody>
-                </table>
-            </div>
         `;
+
+        // ตรวจสอบว่ามีข้อมูล doctorOrders หรือไม่
+        if (data.doctorOrders && data.doctorOrders.length > 0) {
+            data.doctorOrders.forEach(o => {
+                let badgeClass = o.status === 'Completed' ? 'bg-success' : 'bg-secondary';
+                let typeBadge = 'bg-info text-dark';
+                
+                ordersHtml += `
+                    <tr>
+                        <td>
+                            ${o.date} <br>
+                            <small class="text-muted">${o.time}</small>
+                        </td>
+                        <td><span class="badge ${typeBadge}">${o.type}</span></td>
+                        <td>${o.item}</td>
+                        <td>${o.qty || '-'}</td>
+                        <td><span class="badge rounded-pill ${badgeClass}">${o.status}</span></td>
+                    </tr>
+                `;
+            });
+        } else {
+            ordersHtml += `<tr><td colspan="5" class="text-center py-4 text-muted">- ไม่มีคำสั่งแพทย์ใหม่ -</td></tr>`;
+        }
+
+        ordersHtml += `</tbody></table></div>`;
+        document.getElementById('tab-orders').innerHTML = ordersHtml;
+
 
         // --- Tab 3: Notes ---
         document.getElementById('tab-notes').innerHTML = `
@@ -290,7 +318,6 @@
         `;
 
         // --- Tab 5: Labs ---
-        // เพิ่มการเช็ค flag ไม่ให้ error กรณี flag เป็น null
         document.getElementById('tab-labs').innerHTML = `
             <h5 class="text-primary mb-3">รายงานผลทางห้องปฏิบัติการ (Lab Results)</h5>
             ${data.lab && data.lab.length > 0 ? data.lab.map(l => `
@@ -343,7 +370,6 @@
         document.getElementById('vitalsHn').value = hn;
         document.getElementById('vitalsAn').value = an;
         
-        // ตรวจสอบค่าก่อนใส่ (ถ้าเป็น null ให้ใส่ค่าว่าง)
         document.getElementById('inputWeight').value = (w && w !== 'null' && w !== 'undefined') ? w : '';
         document.getElementById('inputHeight').value = (h && h !== 'null' && h !== 'undefined') ? h : '';
         document.getElementById('inputVitals').value = (v && v !== 'null' && v !== 'undefined') ? v : '';

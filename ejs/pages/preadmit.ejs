@@ -3,169 +3,201 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
 <div class="container-fluid p-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3 class="fw-bold text-primary"><i class="bi bi-calendar-check"></i> Pre-Admit</h3>
-    <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#newAdmitModal">
-      <i class="bi bi-plus-circle"></i> ลงรายการใหม่
-    </button>
-  </div>
-
-  <div class="card border-0 shadow-sm mb-4">
-    <div class="card-body">
-      <div class="row g-3">
-        <div class="col-md-3">
-          <label class="form-label text-muted">วันที่</label>
-          <input type="date" class="form-control" id="filterDate" />
-        </div>
-        <div class="col-md-9">
-          <label class="form-label text-muted">ค้นหา</label>
-          <div class="input-group">
-            <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
-            <input type="text" id="searchInput" class="form-control" placeholder="ค้นหา ชื่อ, HN, หรือ เบอร์โทร..." />
-          </div>
-        </div>
-        <div class="col-md-4 d-flex align-items-end">
-          <button class="btn btn-secondary w-100" onclick="window.location.reload()">Clear Filter</button>
-        </div>
-      </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold text-primary"><i class="bi bi-calendar-check"></i> Pre-Admit (ผู้ป่วยรอรับเข้าตึก)</h3>
+        <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#newAdmitModal">
+            <i class="bi bi-plus-circle"></i> ลงรายการจองใหม่
+        </button>
     </div>
-  </div>
 
-  <div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0" id="admitTable">
-          <thead class="table-light">
-            <tr>
-              <th class="py-3 ps-3">ID</th>
-              <th>วันที่ Admit</th>
-              <th>HN</th>
-              <th>ชื่อ-นามสกุล</th>
-              <th>เบอร์ติดต่อ</th>
-              <th>แพทย์เจ้าของไข้</th>
-              <th>หมายเหตุ</th>
-              <th class="text-end pe-3">จัดการ</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-            <% if (typeof preAdmits === 'undefined' || preAdmits.length === 0) { %>
-              <tr>
-                  <td colspan="8" class="text-center text-muted py-5">ยังไม่มีข้อมูล Pre-Admit</td>
-              </tr>
-            <% } else { %>
-              <% preAdmits.forEach((item, index) => { %>
-                <tr>
-                  <td class="ps-3 text-muted">#<%= item.id %></td>
-                  <td>
-                    <span class="badge bg-info text-dark">
-                      <%= new Date(item.admit_date).toLocaleDateString('th-TH') %>
-                    </span>
-                  </td>
-                  <td><%= item.hn %></td>
-                  <td class="fw-bold text-primary"><%= item.patient_name %></td>
-                  <td><%= item.phone %></td>
-                  <td><%= item.doctor_name %></td>
-                  <td class="small text-muted text-truncate" style="max-width: 150px;"><%= item.note %></td>
-                  <td class="text-end pe-3">
-                    <a href="/main/delete-preadmit/<%= item.id %>" 
-                       class="btn btn-sm btn-outline-danger" 
-                       onclick="return confirm('ยืนยันที่จะลบรายการนี้?');">
-                       <i class="bi bi-trash"></i>
-                    </a>
-                  </td>
-                </tr>
-              <% }); %>
-            <% } %>
-          </tbody>
-        </table>
-      </div>
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label text-muted">วันที่จอง</label>
+                    <input type="date" class="form-control" id="filterDate" onchange="filterTable()" />
+                </div>
+                <div class="col-md-7">
+                    <label class="form-label text-muted">ค้นหา</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                        <input type="text" id="searchInput" class="form-control" placeholder="ค้นหา ชื่อ, HN, หรือ เบอร์โทร..." onkeyup="filterTable()" />
+                    </div>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button class="btn btn-secondary w-100" onclick="resetFilter()">
+                        <i class="bi bi-arrow-counterclockwise"></i> ล้างตัวกรอง
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="admitTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="py-3 ps-3">ID</th>
+                            <th>วันที่คาดว่าจะ Admit</th>
+                            <th>HN</th>
+                            <th>ชื่อ-นามสกุล</th>
+                            <th>เบอร์ติดต่อ</th>
+                            <th>แพทย์เจ้าของไข้</th>
+                            <th>หมายเหตุ</th>
+                            <th class="text-end pe-3">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <% if (typeof preAdmits === 'undefined' || preAdmits.length === 0) { %>
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-5">
+                                    <i class="bi bi-inbox fs-1"></i><br>ยังไม่มีข้อมูล Pre-Admit
+                                </td>
+                            </tr>
+                        <% } else { %>
+                            <% preAdmits.forEach((item) => { %>
+                                <tr data-date="<%= new Date(item.admit_date).toISOString().split('T')[0] %>">
+                                    <td class="ps-3 text-muted">#<%= item.id %></td>
+                                    <td>
+                                        <span class="badge bg-info text-dark">
+                                            <i class="bi bi-calendar-event"></i> 
+                                            <%= new Date(item.admit_date).toLocaleDateString('th-TH') %>
+                                        </span>
+                                    </td>
+                                    <td><span class="badge bg-light text-dark border"><%= item.hn %></span></td>
+                                    <td class="fw-bold text-primary"><%= item.patient_name %></td>
+                                    <td><%= item.phone || '-' %></td>
+                                    <td><%= item.doctor_name %></td>
+                                    <td class="small text-muted text-truncate" style="max-width: 150px;">
+                                        <%= item.note || '-' %>
+                                    </td>
+                                    <td class="text-end pe-3">
+                                        <a href="/main/admit?hn=<%= item.hn %>" class="btn btn-sm btn-success">
+                                            <i class="bi bi-box-arrow-in-right"></i> รับตัว
+                                        </a>
+
+                                        <a href="/main/delete-preadmit/<%= item.id %>" 
+                                           class="btn btn-sm btn-outline-danger" 
+                                           onclick="return confirm('ยืนยันที่จะลบรายการจองนี้?');">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="newAdmitModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      
-      <form action="/main/save-preadmit" method="POST">
-        
-        <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title fw-bold">
-            <i class="bi bi-person-plus-fill me-2"></i>ลงรายการ Pre-Admit ใหม่
-          </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form action="/main/save-preadmit" method="POST">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-person-plus-fill me-2"></i>ลงรายการ Pre-Admit ใหม่
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">HN</label>
+                            <input type="text" name="hn" class="form-control" placeholder="ระบุ HN" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">วันที่ Admit</label>
+                            <input type="date" name="admit_date" class="form-control" required />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">ชื่อ-นามสกุล ผู้ป่วย</label>
+                            <input type="text" name="patient_name" class="form-control" placeholder="ระบุชื่อ-นามสกุล" required />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">อายุ</label>
+                            <input type="number" name="age" class="form-control" placeholder="ปี">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">เบอร์ติดต่อ</label>
+                            <input type="text" name="phone" class="form-control" placeholder="0xx-xxx-xxxx" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">แพทย์เจ้าของไข้</label>
+                            <select class="form-select" name="doctor_name">
+                                <option selected value="">เลือกแพทย์...</option>
+                                <option value="นพ.สมชาย ใจดี">นพ.สมชาย ใจดี</option>
+                                <option value="พญ.มีนา น่ารัก">พญ.มีนา น่ารัก</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">หมายเหตุ</label>
+                            <textarea class="form-control" name="note" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i> บันทึกข้อมูล
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="modal-body">
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label">HN</label>
-              <input type="text" name="hn" class="form-control" placeholder="ระบุ HN" required />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">วันที่ Admit</label>
-              <input type="date" name="admitDate" class="form-control" required />
-            </div>
-            <div class="col-12">
-              <label class="form-label">ชื่อ-นามสกุล ผู้ป่วย</label>
-              <input type="text" name="patientName" class="form-control" placeholder="ระบุชื่อ-นามสกุล" required />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">เบอร์ติดต่อ</label>
-              <input type="text" name="phone" class="form-control" placeholder="0xx-xxx-xxxx" />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">แพทย์เจ้าของไข้</label>
-              <select class="form-select" name="doctor">
-                <option selected value="">เลือกแพทย์...</option>
-                <option value="นพ. สมชาย ใจดี">นพ. สมชาย ใจดี</option>
-                <option value="พญ. สวยใส ใจดี">พญ. สวยใส ใจดี</option>
-                <option value="นพ. รักษา ดีมาก">นพ. รักษา ดีมาก</option>
-              </select>
-            </div>
-            <div class="col-12">
-              <label class="form-label">หมายเหตุ</label>
-              <textarea class="form-control" name="note" rows="2"></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer bg-light">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-          <button type="submit" class="btn btn-primary">
-            <i class="bi bi-save me-1"></i> บันทึกข้อมูล
-          </button>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 
 <script>
-  // Script ค้นหา (Search) ง่ายๆ ฝั่ง Client
-  document.getElementById("searchInput").addEventListener("keyup", function() {
-      let value = this.value.toLowerCase();
-      let rows = document.querySelectorAll("#tableBody tr");
-      
-      rows.forEach(row => {
-          let text = row.innerText.toLowerCase();
-          row.style.display = text.includes(value) ? "" : "none";
-      });
-  });
+    // ฟังก์ชันกรองข้อมูล (ทำงานร่วมกันทั้ง Search Box และ Date Picker)
+    function filterTable() {
+        const searchText = document.getElementById("searchInput").value.toLowerCase();
+        const dateFilter = document.getElementById("filterDate").value; // รูปแบบ YYYY-MM-DD
+        
+        const rows = document.querySelectorAll("#tableBody tr");
 
-  // Script กรองวันที่
-  document.getElementById("filterDate").addEventListener("change", function() {
-      let filterDate = this.value; // yyyy-mm-dd
-      if(!filterDate) {
-          document.querySelectorAll("#tableBody tr").forEach(r => r.style.display = "");
-          return;
-      }
-      
-      let [y, m, d] = filterDate.split('-');
-      let searchStr = `${parseInt(d)}/${parseInt(m)}/${parseInt(y)+543}`;
-      
-      let rows = document.querySelectorAll("#tableBody tr");
-      rows.forEach(row => {
-          let dateCol = row.cells[1].innerText;
-          row.style.display = dateCol.includes(searchStr) ? "" : "none";
-      });
-  });
+        rows.forEach(row => {
+            // 1. เช็ค Text (หาจากทั้งบรรทัด)
+            const rowText = row.innerText.toLowerCase();
+            const textMatch = rowText.includes(searchText);
+
+            // 2. เช็ค Date (ดึงจาก attribute data-date ที่เราฝังไว้)
+            const rowDate = row.getAttribute("data-date"); 
+            // ถ้าไม่ได้เลือกวันที่ (dateFilter เป็นค่าว่าง) ให้ถือว่าผ่านเสมอ
+            const dateMatch = !dateFilter || (rowDate === dateFilter);
+
+            // 3. แสดงผลเมื่อเงื่อนไขเป็นจริง "ทั้งคู่"
+            if (textMatch && dateMatch) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    // ฟังก์ชันล้างตัวกรอง
+    function resetFilter() {
+        document.getElementById("searchInput").value = "";
+        document.getElementById("filterDate").value = "";
+        filterTable(); // เรียกกรองใหม่ (ซึ่งจะแสดงทั้งหมด)
+    }
+
+
+
+    function selectBed(bedNo, el) {
+    selectedBed = bedNo;
+
+    document.querySelectorAll(".bed-card").forEach(card => {
+        card.classList.remove("border-primary", "bg-primary", "text-white");
+    });
+
+    el.classList.add("border-primary", "bg-primary", "text-white");
+
+    document.getElementById("bedInput").value = bedNo;
+    }
+
+
 </script>

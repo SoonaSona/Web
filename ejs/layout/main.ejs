@@ -24,10 +24,6 @@
       <aside class="sidebar">
         <h2>Hos IPD</h2>
 
-        <div class="px-3 mb-3">
-          <input type="text" class="form-control" placeholder="Search for..." />
-        </div>
-
         <ul>
           <li>
             <a
@@ -38,6 +34,16 @@
           </li>
           <li><a href="/main/nurse">Nurse Station</a></li>
           <li><a href="/main/preadmit">Pre-Admit</a></li>
+
+          <li>
+            <a
+              href="/main/doctor"
+              class="<%= body.includes('doctor') ? 'active' : '' %>"
+            >
+              Doctor Station
+            </a>
+          </li>
+
           <li><a href="/main/food">อาหาร</a></li>
           <li><a href="/main/medicine">ยา</a></li>
           <li><a href="/main/admin">ระบบ Admin</a></li>

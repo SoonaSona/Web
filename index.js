@@ -294,12 +294,18 @@ app.get("/main/nurse", checkAuth, async (req, res) => {
     const sqlMedOrders = "SELECT * FROM med_orders ORDER BY created_at DESC";
     const sqlNurseNotes = "SELECT * FROM nurse_notes ORDER BY created_at DESC";
     const sqlLabs = "SELECT * FROM lab_results ORDER BY report_date DESC";
+    const sqlDoctorOrders =
+      "SELECT * FROM doctor_orders ORDER BY date DESC, time DESC";
 
-    const [medOrders, nurseNotes, labResults] = await Promise.all([
-      query(sqlMedOrders),
-      query(sqlNurseNotes),
-      query(sqlLabs),
-    ]);
+    // แก้บรรทัด Promise.all เป็นแบบนี้ครับ
+    const [medOrders, nurseNotes, labResults, doctorOrders] = await Promise.all(
+      [
+        query(sqlMedOrders),
+        query(sqlNurseNotes),
+        query(sqlLabs),
+        query(sqlDoctorOrders), // <--- อย่าลืมเพิ่มอันนี้!
+      ],
+    );
 
     // 3. Map ข้อมูลจัดรูปแบบส่งให้ frontend
     const readyData = patientsList.map((p) => {
@@ -331,6 +337,18 @@ app.get("/main/nurse", checkAuth, async (req, res) => {
             type: m.type,
             item: m.med_list,
             status: m.status,
+          })),
+
+        doctorOrders: doctorOrders
+          .filter((d) => d.hn === p.hn) // คัดเฉพาะของคนไข้คนนี้
+          .map((d) => ({
+            id: d.id,
+            date: new Date(d.date).toLocaleDateString("th-TH"),
+            time: d.time.slice(0, 5),
+            type: d.type,
+            item: d.item,
+            qty: d.qty,
+            status: d.status,
           })),
 
         // Tab 3: Notes
@@ -442,6 +460,121 @@ app.post("/main/update-vitals", checkAuth, (req, res) => {
   });
 });
 
+// Route สำหรับหน้าคำสั่งแพทย์ (แยกออกมาใหม่)
+// --- เพิ่มใน index.js ---
+
+// Route สำหรับหน้าคำสั่งแพทย์ (รับค่า HN มาด้วย)
+// index.js (ค้นหา Route นี้แล้วแก้ทับเลยครับ)
+
+app.get("/main/nurse/orders/:hn", checkAuth, (req, res) => {
+  const hn = req.params.hn;
+
+  // 1. ดึงข้อมูลคนไข้
+  const sqlPatient = "SELECT * FROM patients WHERE hn = ?";
+
+  // 2. ดึงข้อมูลคำสั่งแพทย์
+  const sqlOrders =
+    "SELECT * FROM doctor_orders WHERE hn = ? ORDER BY date DESC, time DESC";
+
+  connection.query(sqlPatient, [hn], (err, patientResult) => {
+    // ถ้า Error หรือหาคนไข้ไม่เจอ
+    if (err || patientResult.length === 0) {
+      console.error(err);
+      return res.send(
+        "<script>alert('ไม่พบข้อมูลผู้ป่วย'); window.close();</script>",
+      );
+    }
+
+    connection.query(sqlOrders, [hn], (err2, orderResult) => {
+      // --- จุดที่แก้ไข: ถ้า Error ให้ orderResult เป็น array ว่าง ---
+      if (err2) {
+        console.error("Doctor Orders Error:", err2);
+        orderResult = []; // กันไม่ให้เป็น undefined
+      }
+      // --------------------------------------------------------
+
+      res.render("pages/doctor_orders", {
+        patient: patientResult[0],
+        orders: orderResult, // ส่งค่าไป (ถ้าไม่มีข้อมูลจะเป็น [])
+        user: req.session.username,
+        role: req.session.role,
+      });
+    });
+  });
+});
+
+// --- เพิ่มลงใน index.js (ต่อจากส่วนของ Nurse ก็ได้) ---
+
+// 1. GET: หน้า Doctor Dashboard (หน้ารวมคนไข้สำหรับแพทย์)
+app.get("/main/doctor", checkAuth, (req, res) => {
+  // ดึงเฉพาะคนไข้ที่ Admit อยู่
+  const sql = `
+        SELECT a.an, a.hn, a.room_no, a.bed_no, a.main_doctor, a.diagnosis, 
+               p.first_name, p.last_name, p.age, p.gender
+        FROM admissions a
+        JOIN patients p ON a.hn = p.hn
+        WHERE a.status = 'admitted'
+        ORDER BY a.room_no ASC, a.bed_no ASC
+    `;
+
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.send("Database Error");
+    }
+
+    res.render("pages/doctor_dashboard", {
+      patients: results,
+      user: req.session.username,
+      role: req.session.role,
+    });
+  });
+});
+
+// ==========================================
+//  DOCTOR ORDER ACTIONS (บันทึก / ลบ)
+// ==========================================
+
+// 1. POST: บันทึกข้อมูล (รองรับทั้ง เพิ่มใหม่ และ แก้ไข)
+app.post("/main/doctor/save-order", checkAuth, (req, res) => {
+  const { id, hn, date, time, type, item, qty } = req.body;
+  const doctor_name = req.session.username || "Doctor";
+
+  if (id && id !== "") {
+    // --- กรณีแก้ไข (Update) ---
+    const sqlUpdate =
+      "UPDATE doctor_orders SET date=?, time=?, type=?, item=?, qty=? WHERE id=?";
+    connection.query(sqlUpdate, [date, time, type, item, qty, id], (err) => {
+      if (err) console.error(err);
+      // กลับไปหน้าเดิม (ต้องส่ง HN กลับไปที่ URL ด้วย)
+      res.redirect(`/main/nurse/orders/${hn}`);
+    });
+  } else {
+    // --- กรณีเพิ่มใหม่ (Insert) ---
+    const sqlInsert =
+      "INSERT INTO doctor_orders (hn, date, time, type, item, qty, doctor_name, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending')";
+    connection.query(
+      sqlInsert,
+      [hn, date, time, type, item, qty, doctor_name],
+      (err) => {
+        if (err) console.error(err);
+        res.redirect(`/main/nurse/orders/${hn}`);
+      },
+    );
+  }
+});
+
+// 2. GET: ลบรายการ
+app.get("/main/doctor/delete-order/:id", checkAuth, (req, res) => {
+  const id = req.params.id;
+  const hn = req.query.hn; // รับค่า HN มาจาก Query String เพื่อให้ Redirect ถูก
+
+  connection.query("DELETE FROM doctor_orders WHERE id = ?", [id], (err) => {
+    if (err) console.error(err);
+    res.redirect(`/main/nurse/orders/${hn}`);
+  });
+});
+
 // Route สำหรับหน้า Pre-Admit
 // ==========================================
 //  PRE-ADMIT SYSTEM
@@ -478,44 +611,151 @@ app.get("/main/preadmit", checkAuth, (req, res) => {
 
 // 2. POST: บันทึกข้อมูล Pre-Admit ใหม่
 app.post("/main/save-preadmit", checkAuth, (req, res) => {
-  // รับค่าจากฟอร์ม
-  const { hn, admitDate, patientName, phone, doctor, note } = req.body;
+  const { hn, admit_date, patient_name, age, phone, doctor_name, note } =
+    req.body;
 
-  const sql = `INSERT INTO preadmissions (hn, admit_date, patient_name, phone, doctor_name, note) 
-               VALUES (?, ?, ?, ?, ?, ?)`;
+  // แยกชื่อ-นามสกุล
+  const nameParts = patient_name.trim().split(" ");
+  const first_name = nameParts[0] || "";
+  const last_name = nameParts.slice(1).join(" ") || "";
+
+  // ✅ INSERT preadmissions (ต้องให้จำนวน ? ตรงกับ column)
+  const sqlPre = `
+    INSERT INTO preadmissions (hn, admit_date, patient_name, age, phone, doctor_name, note)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  const sqlCheckPatient = "SELECT * FROM patients WHERE hn = ?";
+  const sqlInsertPatient = `
+    INSERT INTO patients (hn, first_name, last_name, age, phone, status)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
 
   connection.query(
-    sql,
-    [hn, admitDate, patientName, phone, doctor, note],
+    sqlPre,
+    [hn, admit_date, patient_name, age, phone, doctor_name, note],
     (err) => {
       if (err) {
-        console.error(err);
+        console.error("❌ PreAdmit Error:", err);
         return res.send(
-          "<script>alert('บันทึกไม่สำเร็จ: " +
-            err.message +
-            "'); window.history.back();</script>",
+          `<script>alert('${err.message}');history.back();</script>`,
         );
       }
-      // บันทึกเสร็จ กลับไปหน้าเดิม (/main/preadmit)
-      res.redirect("/main/preadmit");
+
+      // ✅ ถ้า HN ยังไม่มีใน patients → insert
+      connection.query(sqlCheckPatient, [hn], (err2, result) => {
+        if (err2) {
+          console.error(err2);
+          return res.redirect("/main/preadmit");
+        }
+
+        if (result.length === 0) {
+          connection.query(
+            sqlInsertPatient,
+            [hn, first_name, last_name, age, phone, "Pre-Admit"],
+            () => res.redirect("/main/preadmit"),
+          );
+        } else {
+          res.redirect("/main/preadmit");
+        }
+      });
     },
   );
 });
 
-// 3. DELETE: ลบรายการ Pre-Admit
-app.get("/main/delete-preadmit/:id", checkAuth, (req, res) => {
+// 3. GET: ลบรายการ Pre-Admit
+
+// ==========================================
+// Route: ยืนยันรับตัว (Admit) -> บันทึกเข้า DB ทันที
+// ==========================================
+app.post("/main/confirm-admit", checkAuth, (req, res) => {
+  // ✅ รับค่าจาก form (ต้องตรงกับ name ใน ejs)
+  const { hn, doctor_name, patient_name, bed } = req.body;
+
+  // ✅ ตรวจสอบค่าที่จำเป็น
+  if (!hn) {
+    return res.send("<script>alert('HN หายไป');history.back();</script>");
+  }
+
+  // ✅ สร้างค่า Admit
+  const an = "AN" + Math.floor(Date.now() / 1000);
+  const admitDate = new Date();
+  const status = "Admitted";
+  const finalBed = bed || "Wait"; // ถ้าไม่เลือก bed ให้เป็น Wait
+
+  // ✅ SQL Update patients
+  const sqlUpdatePatient = `
+      UPDATE patients 
+      SET status = ?, 
+          bed = ?, 
+          an = ?, 
+          doctor_name = ?, 
+          admit_date = ?
+      WHERE hn = ?
+  `;
+
+  // ✅ SQL Insert admissions
+  const sqlInsertAdmission = `
+      INSERT INTO admissions (an, hn, admit_date, doctor_name, room_no, status)
+      VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+  // ✅ SQL Delete preadmit
+  const sqlDeletePre = "DELETE FROM preadmissions WHERE hn = ?";
+
+  // ✅ Step 1: Update patients
   connection.query(
-    "DELETE FROM preadmissions WHERE id = ?",
-    [req.params.id],
+    sqlUpdatePatient,
+    [status, finalBed, an, doctor_name, admitDate, hn],
     (err) => {
-      if (err) console.error(err);
-      // ลบเสร็จ กลับไปหน้าเดิม
-      res.redirect("/main/preadmit");
+      if (err) {
+        console.error("❌ Update patients error:", err);
+        return res.send(
+          `<script>alert('Update Error: ${err.message}');history.back();</script>`,
+        );
+      }
+
+      // ✅ Step 2: Insert admissions
+      connection.query(
+        sqlInsertAdmission,
+        [an, hn, admitDate, doctor_name, finalBed, status],
+        (err2) => {
+          if (err2) {
+            console.error("❌ Insert admissions error:", err2);
+          }
+
+          // ✅ Step 3: Delete preadmissions
+          connection.query(sqlDeletePre, [hn], (err3) => {
+            if (err3) {
+              console.error("❌ Delete preadmit error:", err3);
+            }
+
+            console.log("✅ Admit Success:", hn);
+            res.redirect("/main/admit");
+          });
+        },
+      );
     },
   );
 });
-// index.js
 
+app.get("/main/delete-preadmit/:id", checkAuth, (req, res) => {
+  const id = req.params.id;
+
+  const sql = "DELETE FROM preadmissions WHERE id = ?";
+
+  connection.query(sql, [id], (err) => {
+    if (err) {
+      console.error("Delete PreAdmit Error:", err);
+      return res.send(
+        `<script>alert('ลบไม่สำเร็จ: ${err.message}');history.back();</script>`,
+      );
+    }
+
+    console.log("✅ Deleted PreAdmit ID:", id);
+    res.redirect("/main/preadmit");
+  });
+});
 // ---------------------------------------------
 // 1. GET: แสดงหน้า Food (ดึงรายชื่อคนไข้ + เมนูอาหาร)
 // ---------------------------------------------

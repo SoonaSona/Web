@@ -1,0 +1,148 @@
+<%- contentFor('body') %>
+
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">คำสั่งแพทย์ (Doctor Orders)</h2>
+            <h5 class="text-muted">
+                ผู้ป่วย: <%= patient.first_name %> <%= patient.last_name %> (HN: <%= patient.hn %>)
+            </h5>
+        </div>
+        <button class="btn btn-primary" onclick="openModal()">
+            + เพิ่มคำสั่งรักษา
+        </button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th width="15%">วัน-เวลา</th>
+                        <th width="15%">ประเภท</th>
+                        <th width="40%">รายการคำสั่ง (Item / Instruction)</th>
+                        <th width="15%">สถานะ</th>
+                        <th width="15%" class="text-end">จัดการ</th> </tr>
+                </thead>
+                <tbody>
+                    <% if (!orders || orders.length === 0) { %>
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">ไม่มีคำสั่งแพทย์ในขณะนี้</td>
+                        </tr>
+                    <% } else { %>
+                        <% orders.forEach(function(o) { %>
+                            <tr>
+                                <td>
+                                    <%= new Date(o.date).toLocaleDateString('th-TH') %> <br>
+                                    <small class="text-muted"><%= o.time.slice(0, 5) %></small>
+                                </td>
+                                <td><span class="badge bg-info text-dark"><%= o.type %></span></td>
+                                <td>
+                                    <strong><%= o.item %></strong>
+                                    <% if(o.qty) { %> <br><small class="text-muted">จำนวน: <%= o.qty %></small> <% } %>
+                                </td>
+                                <td>
+                                    <span class="badge rounded-pill <%= o.status === 'Completed' ? 'bg-success' : 'bg-secondary' %>">
+                                        <%= o.status %>
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-warning" 
+                                        onclick="editOrder('<%= o.id %>', '<%= o.date %>', '<%= o.time %>', '<%= o.type %>', '<%= o.item %>', '<%= o.qty %>')">
+                                        แก้ไข
+                                    </button>
+                                    
+                                    <a href="/main/doctor/delete-order/<%= o.id %>?hn=<%= patient.hn %>" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('ยืนยันการลบรายการนี้?')">
+                                        ลบ
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="orderModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/main/doctor/save-order" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">เพิ่มคำสั่งรักษา</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="orderId">
+                    <input type="hidden" name="hn" value="<%= patient.hn %>">
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">วันที่</label>
+                            <input type="date" name="date" id="orderDate" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">เวลา</label>
+                            <input type="time" name="time" id="orderTime" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">ประเภท</label>
+                            <select name="type" id="orderType" class="form-select">
+                                <option value="One Day">One Day (ครั้งเดียว)</option>
+                                <option value="Continue">Continue (ต่อเนื่อง)</option>
+                                <option value="Investigation">Lab / X-ray</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">รายการคำสั่ง / ชื่อยา</label>
+                            <input type="text" name="item" id="orderItem" class="form-control" required placeholder="เช่น Paracetamol 500mg, เจาะเลือด CBC">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">จำนวน / ขนาด (Optional)</label>
+                            <input type="text" name="qty" id="orderQty" class="form-control" placeholder="เช่น 1 tab, 1 amp">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openModal() {
+        document.getElementById('modalTitle').innerText = 'เพิ่มคำสั่งรักษา';
+        document.getElementById('orderId').value = ''; // เคลียร์ ID เพื่อบอกว่าเป็นของใหม่
+        document.getElementById('orderItem').value = '';
+        document.getElementById('orderQty').value = '';
+        
+        // ตั้งเวลาปัจจุบัน
+        const now = new Date();
+        document.getElementById('orderDate').value = now.toISOString().split('T')[0];
+        document.getElementById('orderTime').value = now.toTimeString().slice(0, 5);
+
+        new bootstrap.Modal(document.getElementById('orderModal')).show();
+    }
+
+    function editOrder(id, date, time, type, item, qty) {
+        document.getElementById('modalTitle').innerText = 'แก้ไขคำสั่งรักษา';
+        document.getElementById('orderId').value = id;
+        
+        // แปลงวันที่ให้ลงฟอร์มได้ถูกต้อง
+        const d = new Date(date);
+        document.getElementById('orderDate').value = d.toISOString().split('T')[0];
+        
+        document.getElementById('orderTime').value = time.slice(0, 5);
+        document.getElementById('orderType').value = type;
+        document.getElementById('orderItem').value = item;
+        document.getElementById('orderQty').value = qty;
+
+        new bootstrap.Modal(document.getElementById('orderModal')).show();
+    }
+</script>
