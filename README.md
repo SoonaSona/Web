@@ -25,21 +25,54 @@ npm install express ejs nodemon
 npm install express-ejs-layouts
 ```
 
-npm install mysql2 express-session
+5. Install sql2
 
-5. Run the app
+```bash
+npm install mysql2 express-session
+```
+
+6. Import Database (.sql)
+
+```bash
+เปิด XAMPP → Start MySQL
+เปิด MySQL Workbench
+เข้าเมนู
+Server → Data Import
+เลือกไฟล์
+hospital_project.sql
+กด Start Import
+```
+
+7. Run the app
 
 ```bash
 npm run dev
 ```
 
-6. Open the app in your browser
+8. Open the app in your browser
 
 ```
 http://localhost:3000
 ```
 
 ---
+
+📂 Project Structure
+
+```bash
+Web/
+│── index.js
+│── package.json
+│── hospital_project.sql
+│── views/
+│   ├── pages/
+│   │   ├── preadmit.ejs
+│   │   ├── admit.ejs
+│   │   └── ...
+│── public/
+│   ├── css/
+│   └── js/
+```
 
 ## 🔧 Available Scripts
 
@@ -54,3 +87,8 @@ You can add a `dev` script in `package.json` for convenience:
 ```
 
 ---
+
+## 👤 Default Login (Example)
+
+- Username: `admin`
+- Password: `1234`
