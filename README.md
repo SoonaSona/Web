@@ -92,3 +92,4 @@ You can add a `dev` script in `package.json` for convenience:
 
 - Username: `admin`
 - Password: `1234`
+- Room: `1111`
