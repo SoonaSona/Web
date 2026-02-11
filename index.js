@@ -1058,6 +1058,28 @@ app.post("/main/admin/add-user", checkAuth, checkAdmin, (req, res) => {
   });
 });
 
+// 4. POST: แก้ไข User
+app.post("/main/admin/edit-user", checkAuth, checkAdmin, (req, res) => {
+  const { id, username, fullname, role } = req.body;
+
+  const sql = `
+    UPDATE users 
+    SET username = ?, fullname = ?, role = ?
+    WHERE id = ?
+  `;
+
+  connection.query(sql, [username, fullname, role, id], (err) => {
+    if (err) {
+      console.error("Edit User Error:", err);
+      return res.send(
+        "<script>alert('แก้ไขไม่สำเร็จ'); window.history.back();</script>",
+      );
+    }
+
+    res.redirect("/main/admin/users");
+  });
+});
+
 // 3. DELETE: ลบ User
 app.get("/main/admin/delete-user/:id", checkAuth, checkAdmin, (req, res) => {
   const idToDelete = req.params.id;

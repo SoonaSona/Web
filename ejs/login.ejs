@@ -15,14 +15,27 @@
           <img src="/image/logo.png" alt="logo" />
         </div>
 
+        <!-- Error Message -->
+        <div id="error-message"></div>
+
         <!-- Username -->
         <div class="form-group">
-          <input type="text" name="username" placeholder="USERNAME" />
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="USERNAME"
+          />
         </div>
 
         <!-- Password -->
         <div class="form-group">
-          <input type="password" name="password" placeholder="PASSWORD" />
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="PASSWORD"
+          />
         </div>
 
         <!-- Room Number -->
@@ -39,9 +52,22 @@
         <button type="submit">LOGIN</button>
 
         <div class="forgot">
-          <a href="#">Forgot password?</a>
+          <a href="#" onclick="forgotPassword()">Forgot password?</a>
         </div>
       </form>
     </div>
   </body>
+
+  <script>
+    function forgotPassword() {
+      alert("ติดต่อหา admin");
+    }
+
+    <% if (error) { %>
+      const msg = "<%= error %>";
+      document.getElementById("error-message").innerText = msg;
+      document.getElementById("username").classList.add("error-input");
+      document.getElementById("password").classList.add("error-input");
+    <% } %>
+  </script>
 </html>
